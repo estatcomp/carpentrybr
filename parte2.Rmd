@@ -1,0 +1,125 @@
+---
+title: "Parte 2"
+author: "Mário"
+date: "11 de março de 2017"
+output: html_document
+---
+
+## Vetorização
+
+É de extrema relevância compreender que o R é vetorizado. Isso quer dizer que variáveis e funções podem receber vetores. 
+
+Veja os exemplos abaixo:
+
+```{r}
+1:5
+```
+```{r}
+2^(1:5)
+```
+```{r}
+x <- 1:5
+2^x
+```
+
+A possibilidade de variáveis e funções receber valores faz do R um software extremamente poderoso. Este tópico essa abordado com mais detalhes adiante.
+
+## Controlando o ambiente de trabalho
+
+Existem alguns comandos que o usuário pode utilizar para interagir com o ambiente de trabalho do R.
+
+A função *ls* lista todas as variáveis e funções gravadas no ambiente de trabalho.
+
+```{r}
+ls()
+```
+
+> Dica: Objetos escondidos
+A função não mostra as variáveis e funções que começão com "." Para listar todos os objetos, inclusive os que iniciam com ".", digite ls(all.names=TRUE) e não ls().
+
+Note que na função *ls* não é necessário fornecer argumentos, mas é necessário colocar parêntesis para que o R entenda que se trata de uma função.
+
+Perceba que se digitarmos apenas *ls*, o R nos fornece o código fonte da função.
+
+```{r}
+ls
+```
+
+Pode ser interessante deletar objetos que não serão utilizados adiante. Para isso utilizamos a função *rm*.
+
+```{r}
+rm(x)
+```
+
+Se muitos objetos devem ser excluídos de uma só vez não há necessidade de excluir um por um. Basta utilizar a função *ls* conjugada com a *rm* da seguinte forma:
+
+```{r}
+rm(list=ls())
+```
+
+Neste caso duas funções foram utilizadas em conjunto. Sempre que este for o caso o que está localizado dentro do parêntesis mais interno será avaliado primeiro e assim em diante.
+
+No caso acima foi especificado que o resultado da função *ls* deveria ser usado na forma de lista *list* como argumento da função *rm*. Quando destinados valores de argumentos a funções por nome, o operador a ser utilizado deverá ser o símbolo **=**.
+
+Se utilizarmos <- teremos efeitos indesejados ou  mensagens de erro.
+
+```{r eval=FALSE}
+rm(list <- ls())
+```
+> Erro: símbolo inesperado em : "rm(list <- ls() rm"
+
+> Dica: Avisos vs Erros
+Fique atento pois o R poderá fazer algo inesperado!. Erros, como no caso acima, ocorrem quando o R não consegue efetuar as operações. Avisos, por outro lado, indicam que o R conseguiu efetuar as  operações, mas algo  provavelmente não ocorreu como esperado.
+Em ambos os casos, as mensagens que o R fornece ajudam a consertar o problema.
+
+## Pacotes do R
+
+É possível adicionar funções ao R através da escrita de pacote escritos por você mesmo, ou por pacotes escritos por outras pessoas. Hoje existam mais de 7000 pacotes disponíveis no CRAN (*the comprehensive R archive network*). O R e o Rstudio possuem são funcionais no quesito de gerenciamento de pacotes:
+
+* É possível ver quais pacotes estão instalados. Para isso devemos digitar *installed.packages()*.
+* É possível instalar novos pacotes ao digitar *install.packages("packagename")*, onde *packagename* é o nome do pacote a ser instalado. 
+* É possível atualizar pacotes já instalados. A função utilizada é *update.packages()*.
+* É possível remover pacotes com função a *remove.packages("packagename")* 
+* É possível tornar um pacote habilitado ao uso. A função neste caso é *library(packagename)*.
+
+> Desafio 1
+
+Quais nomes a seguir são válidos para variáveis no R ?
+
+*  min_height
+*  max.height
+*  _age
+*  .mass
+*  MaxLength
+*  min-length
+*  2widths
+*  celsius2kelvin
+
+> Desafio 2
+Quais serão os valores das variáveis definidas abaixo ?
+
+* massa <- 47.5
+* idade <- 122
+* massa <- mass * 2.3
+* idade <- age - 20
+
+> Desafio 3
+
+Rode os códigos do desafio anterior, escreva um comando e compare *massa* com *idade*. A massa é maior que a idade ? 
+
+> Desafio 4
+
+Limpe o seu ambiente de trabalho. Delete as variáveis *massa* e *idade*.
+
+> Desafio 5
+
+Instale os pacotes *ggplot2*, *plyr* e *gapminder*.
+
+> Pontos chave
+
+* Use o RStudio para escrever e rodar programas em R.
+* o R possui os operadores aritméticos e funções matemáticas usuais.
+* Use *<-* para designar valores para variáveis.
+* Use *ls()* para listar as variáveis de um programa.
+* Use *rm()* para deletar objetos de um programa.
+* Use *install.packages()* para instalar pacotes.
