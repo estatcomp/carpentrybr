@@ -16,7 +16,9 @@ source: Rmd
 ---
 ``` 
 
-Porém, mantenha a formatação do código para preservar os desafios e os gráficos gerados. Por exemplo, em `08-plot-ggplot2.Rmd` encontramos o seguinte:
+Porém, mantenha a formatação do código para preservar os desafios e os gráficos gerados. 
+
+Por exemplo, em `08-plot-ggplot2.Rmd` encontramos o seguinte:
 
     We need to tell `ggplot` how we want to visually represent the data, which we
     do by adding a new **geom** layer. In our example, we used `geom_point`, which
@@ -34,7 +36,7 @@ Porém, mantenha a formatação do código para preservar os desafios e os gráf
     > changed over time:
 
 
-Assim, nosso exemplo seria traduzido da seguinte maneira:
+Assim, nosso exemplo seria traduzido da seguinte maneira (por favor, ignore a qualidade da tradução...):
 
     Precisamos dizer ao `ggplot` como gostaríamos de representar visualmente nossos dados, 
     o qual fazemos adicionando uma nova camada **geom**. Em nosso exemplo, nós utilizamos 
