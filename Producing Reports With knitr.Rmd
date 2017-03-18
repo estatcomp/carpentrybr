@@ -1,0 +1,293 @@
+---
+title: "Producing Reports With knitr"
+author: "Telma Tompson"
+date: "12 de março de 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Produzindo relatórios com knitr
+
+####Visão geral
+
+**Ensino:** 60 min
+
+**Exercícios:** 15 min
+
+**Questões**
+
+  + Como posso integrar software e relatórios?
+    
+**Objetivos**
+
+  + Valor de relatórios reproduzíveis
+
+  + Noções básicas de Markdown
+
+  + Pedaços de código R
+
+  + Chunk opções
+
+  + Código R em linha
+
+  + Outros formatos de saída
+
+###Relatórios de análise de dados
+
+Os analistas de dados tendem a escrever muitos relatórios, descrevendo suas análises e resultados, para seus colaboradores ou documentar seu trabalho para referência futura.
+
+Quando eu estava começando, eu escrevia um script R com todo o meu trabalho, e apenas iria enviar um e-mail para o meu colaborador, descrevendo os resultados e anexando vários gráficos. Ao discutir os resultados, haveria muitas vezes confusão sobre qual gráfico era qual.
+
+Mudei-me para escrever relatórios formais, com Word ou LaTeX, mas eu teria que gastar um monte de tempo para obter os números para olhar direito. Principalmente, a preocupação é sobre quebras de página.
+
+Tudo é mais fácil agora que eu crio uma página da web (como um arquivo html). Pode ser um fluxo longo, assim que eu posso usar figuras altas que não caberia ordinário em uma página. Scrolling é seu amigo.
+
+###Programação alfabetizada
+
+Idealmente, esses relatórios de análise são documentos *reprodutíveis*: Se um erro for descoberto ou se alguns assuntos adicionais forem adicionados aos dados, basta recopilar o relatório e obter os resultados novos ou corrigidos (versus reconstruir figuras, colá-las Em um documento do Word, e mais mão-editar vários resultados detalhados).
+
+A ferramenta chave para R é [knitr](https://yihui.name/knitr/), que permite que você crie um documento que é uma mistura de texto e alguns pedaços de código. Quando o documento é processado por knitr, serão executados pedaços de código R, e serão inseridos gráficos ou outros resultados.
+
+Esse tipo de idéia tem sido chamado de "programação alfabetizada".
+
+Knitr permite que você misture basicamente qualquer tipo de texto com qualquer tipo de código, mas recomendamos que você use R Markdown, que mistura Markdown com R. Markdown é um leve-mark-up linguagem para a criação de páginas da web.
+
+###Criando um arquivo R Markdown
+
+No R Studio, clique em Arquivo -> Novo Arquivo -> R Markdown e você receberá uma caixa de diálogo como esta:
+
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/New_R_Markdown.png)
+
+Você pode ficar com o padrão (saída HTML), mas dar-lhe um título.
+
+###Componentes básicos de R Markdown
+
+O pedaço inicial de texto contém instruções para R: você dá à coisa um título, autor e data, e diga que você vai querer produzir a saída html (em outras palavras, uma página da web).
+
+
+```
+---
+title: "Initial R Markdown document"
+author: "Karl Broman"
+date: "April 23, 2015"
+output: html_document
+---
+
+```
+
+Você pode excluir qualquer um desses campos se não quiser que eles sejam incluídos. As citações duplas não são estritamente *necessárias* neste caso. Eles são principalmente necessários se você quiser incluir um dois pontos no título.
+
+RStudio cria o documento com algum texto de exemplo para você começar. Observe abaixo que existem pedaços como
+
+~~~
+```
+{r}
+summary(cars)
+```
+~~~
+
+Estes são pedaços de código R que será executado por knitr e substituído por seus resultados. Mais sobre isso mais tarde.
+
+Observe também o endereço da Web colocado entre colchetes angulares (< >), bem como os asteriscos duplos em  <small>  \*\*Knit\*\* </small>. Este é o [Markdown](http://daringfireball.net/projects/markdown/syntax).
+
+
+
+###Rebaixar
+
+Markdown é um sistema para escrever páginas da web, marcando o texto muito como você faria em um e-mail em vez de escrever código html. O texto marcado é *convertido* em html, substituindo as marcas pelo código html apropriado.
+
+Por enquanto, vamos excluir todas as coisas que estão lá e escrever um pouco de redução.
+
+Você faz coisas **em negrito** usando dois asteriscos, como este: <small> \*\*negrito\*\* </small>, e você faz as coisas em *itálico* usando underscores, como este: <small> \_italics\_ </small>.
+
+Você pode criar uma lista com marcadores escrevendo uma lista com hifens ou asteriscos, como este:
+
+~~~
+* Negrito com asteriscos duplos
+* Itálico com sublinhados
+* Tipo de letra de código com backticks
+~~~
+
+ou assim:
+
+~~~
+- Negrito com asteriscos duplos
+- Itálico com sublinhados
+- Tipo de letra de código com backticks
+~~~
+
+Cada um aparecerá como:
+
++ Negrito com asteriscos duplos
++ Itálico com sublinhados
++ Tipo de código fonte com backticks
+
+(Eu prefiro hífens sobre asteriscos, eu mesmo.)
+
+Você pode fazer uma lista numerada apenas usando números. Você pode usar o mesmo número repetidamente se você quiser:
+
+~~~
+1. negrito com asteriscos duplos
+1. itálico com sublinhados
+1. fonte de tipo de código com backticks
+~~~
+
+Isso aparecerá como:
+
+1. Negrito com asteriscos duplos
+2. Itálico com sublinhados
+3. Tipo de código fonte com backticks
+
+Você pode criar cabeçalhos de seção de tamanhos diferentes iniciando uma linha com algum número de # símbolos:
+
+~~~
+# Título
+## Seção principal
+### Sub-seção
+#### Sub-sub seção
+~~~
+
+Você *compila* o documento R Markdown para uma página da Web html clicando no "Knit HTML" no canto superior esquerdo. E observe o pequeno ponto de interrogação ao lado dele; Clique no ponto de interrogação e você obterá uma "Referência Rápida de Markdown" (com a sintaxe de Markdown) bem como para a documentação do RStudio em R Markdown.
+
+
+####Desafio
+
+Crie um novo documento R Markdown. Exclua todos os pedaços de código R e escreva um pouco de Markdown (algumas seções, algum texto em itálico e uma lista detalhada).
+Converter o documento em uma página da Web.
+
+###Um pouco mais de Markdown
+
+Você pode fazer um hyperlink como este: <small> [text to show] http://the-web-page.com </small>.
+
+Você pode incluir um arquivo de imagem como este:<small> ! [Caption] (http: // url / for / file) </small>
+
+Você pode fazer subscritos (por exemplo, F ~ 2 ~) com <small> F ~ 2 </small> e sobrescritos (por exemplo, F ^ 2 ^) com <small> F ^ 2 ^ </small>.
+
+Se você sabe como escrever equações no [LaTeX](http://www.latex-project.org/), você ficará feliz em saber que você pode usar <small> \$\  \$\ </small> e  <small> \$\$    \$\$ </small>, para inserir equações matemáticas, como <small> \$\ E = mc^2$ </small> e
+
+~~~
+$$y = \mu + \sum_{i=1}^p \beta_i x_i + \epsilon$$
+~~~
+
+###Pedaços de código R
+
+Markdown é interessante e útil, mas o poder real vem de mixagem markdown com pedaços de código R. Este é R Markdown. Quando processado, o código R será executado; Se eles produzem números, os números serão inseridos no documento final.
+
+Os pedaços de código principal têm esta aparência:
+
+~~~
+```
+{r load_data}
+gapminder <- read.csv("~/Desktop/gapminder.csv")
+```
+~~~
+
+Ou seja, você coloca um pedaço de código R entre <small> \```{r chunk_name} </small> e ```. É uma boa idéia dar um nome a cada pedaço, pois eles o ajudarão a corrigir erros e, se houver algum gráfico, os nomes dos arquivos baseiam-se no nome do pedaço de código que os produziu.
+
+####Desafio
+
+Adicionar pedaços de código a
+
++ Carregar o pacote ggplot2
+
++ Ler os dados do gapminder
+
++ Criar um gráfico
+
+
+###Como as coisas são compiladas
+
+Quando você pressiona o botão "Knit HTML", o documento R Markdown é processado por [knitr](https://yihui.name/knitr/) e um documento Markdown simples é produzido (bem como, potencialmente, um conjunto de arquivos de figuras): o código R é executado e substituído pela entrada E a saída; Se os números são produzidos, as ligações a esses números estão incluídos.
+
+Os documentos Markdown e figura são processados pela ferramenta [pandoc](pandoc.org), que converte o arquivo Markdown em um arquivo html, com as figuras incorporadas.
+
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/rmd-15-rmd_to_html_fig-1.png)
+
+###Chunk opções
+
+Há uma variedade de opções para afetar como os pedaços de código são tratados.
+
++ Use <small> echo = FALSE </small> para evitar que o próprio código seja exibido.
++ Use <small> results = "ocultar" </small> para evitar a impressão de resultados.
++ Use <small> eval = FALSE </small> para ter o código mostrado, mas não avaliado.
++ Use <small> warning = FALSE </small> e <small> message = FALSE </small> para ocultar quaisquer avisos ou mensagens produzidas.
++ Use <small> fig.height </small> e <small>fig.width </small> para controlar o tamanho das figuras produzidas (em polegadas).
+
+Então você pode escrever:
+
+~~~
+```
+{r load_libraries, echo=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+~~~
+
+Muitas vezes haverá opções específicas que você vai querer usar repetidamente; Para isso, você pode definir opções globais de pedaços, assim:
+
+~~~
+```
+{r global_options, echo=FALSE}
+knitr::opts_chunk$set(fig.path="Figs/", message=FALSE, warning=FALSE,
+                      echo=FALSE, results="hide", fig.width=11)
+```
+~~~
+
+A opção <small> fig.path </small> define onde os números serão salvos. O / aqui é realmente importante; Sem ele, as figuras seriam salvas no lugar padrão, mas apenas com nomes que sendo com Figs.
+
+Se você tiver vários arquivos R Markdown em um diretório comum, você pode querer usar <small> fig.path </small> para definir prefixos separados para os nomes de arquivo de figura, como <small> fig.path = "Figs / cleaning-" </small> e <small> fig.path = "Figs / análise - " </small>.
+
+####Desafio
+
+Use opções de pedaço para controlar o tamanho de uma figura e ocultar o código.
+
+###Código R em linha
+
+Você pode tornar reproduzíveis *todos* os números do seu relatório. Use <small> `r </small> e  para um pedaço de código em linha, da seguinte forma: <small>  r round (some_value, 2) </small>. O código será executado e substituído pelo valor do resultado.
+
+Não deixe que esses pedaços em linha fiquem divididos entre linhas.
+
+Talvez preceda o parágrafo com um pedaço de código maior que faz cálculos e define coisas, com <small> include = FALSE </small>  para esse pedaço maior (que é o mesmo que <small> echo = FALSE </small> e <small> results = "ocultar" </small>).
+
+Eu sou muito particular sobre o arredondamento em tais situações. Eu posso querer <small> 2.0 </small>, mas <small> round (2.03, 1) </small> vai dar apenas <small> 2 </small>.
+
+A função <small> [myround](https://github.com/kbroman/broman/blob/master/R/myround.R) </small> no meu pacote [R/broman](https://github.com/kbroman) lida com isso.
+
+####Desafio
+
+Experimente um pouco de código R em linha.
+
+###Outras opções de saída
+
+Você também pode converter R Markdown para um PDF ou um documento do Word. Clique no pequeno triângulo ao lado do botão "Knit HTML" para obter um menu suspenso. Ou você poderia colocar <small> pdf_documento </small> ou <small> word_documento </small> no cabeçalho do arquivo.
+
+
+####Dica: Criando documentos PDF
+
+A criação de documentos .pdf pode exigir a instalação de algum software extra. Se necessário, isso é detalhado em uma mensagem de erro.
+
+Tex para janelas está disponível [aqui](https://miktex.org/2.9/setup).
+
+Tex for mac está disponível [aqui](http://tug.org/mactex/).
+
+
+###Bibliografia
+
++ [Knitr in a knutshell tutorial](http://kbroman.org/knitr_knutshell/)
++ [Dynamic Documents with R and knitr](https://www.amazon.com/exec/obidos/ASIN/1482203537/7210-20) (book)
++ [R Markdown documentation](http://rmarkdown.rstudio.com/)
++ [R Markdown cheat sheet](http://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
++ [Getting started with R Markdown](https://www.rstudio.com/resources/webinars/getting-started-with-r-markdown/)
++ [Reproducible Reporting](https://www.rstudio.com/resources/webinars/reproducible-reporting/)
++ [The Ecosystem of R Markdown](https://www.rstudio.com/resources/webinars/the-ecosystem-of-r-markdown/)
++ [Introducing Bookdown](https://www.rstudio.com/resources/webinars/introducing-bookdown/)
+
+
+####Pontos Chave
+
++ Relatório de mix escrito em R Markdown com software escrito em R.
++ Especifique opções de bloco para controlar a formatação.
++ Use <small> knitr </small> para converter esses documentos em PDF e outros formatos.

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="FabianaOlivieri" />
+
+
+<title>Functions Explained</title>
+
+<p>Aqui, verificamos se cada argumento adicional é definido como nulo, e sempre que eles não são nulos irão sobrepor o conjunto de dados
+<p> armazenado pelo argumento não nulo.
+<p>Fazemos isso para que nossa função seja mais flexível para mais tarde. Podemos pedir para calcular o PIB para:
+<ul>
+<li>Conjunto de dados inteiro;
+<li>Um único ano;
+<li>Um único país;
+<li>Uma única combinação de ano e país.
+<ul>
+<p>Ao usar% em%, também podemos dar vários anos ou países a esses argumentos.
+</div>
+<div id="dica" class="section level1">
+<h1>dica</h1>
+<p>PASSANDO O VALOR
+<ul>
+<p>As funções no R, criam ópias para que possam operar dentro do corpo de uma função.
+<p>Quando modificamos o dado dentro da função estamos modificando a cópia do conjunto de dados armazenado, não a variável original que 
+<p>demos como o primeiro argumento.
+<p>Isso é chamado de "pass-by-value" e torna o código de escrita muito mais seguro: você sempre pode ter certeza de que, independentemente
+<p>das mudanças que fizer no corpo da função, fique dentro do corpo da função.
+<ul>
+<h1>dica</h1>
+<p> **ESCOPO DA FUNÇÃO**
+<ul>
+<p>Outro conceito importante é o escopo: quaisquer variáveis ou funções que você criar ou modificar dentro do corpo de uma
+<p>função só existem para o tempo de vida da execução da função. 
+<p>Quando chamamos calcGDP, as variáveis dat, gdp e new só existem dentro do corpo da função. 
+<p>Mesmo que tenhamos variáveis do mesmo nome em nossa sessão R interativa,elas não são modificadas de forma alguma ao executar uma
+<p>função.
+<ul>
+<ul>
+<p><code> gdp <- dat$pop * dat$gdpPercap
+  new <- cbind(dat, gdp=gdp)
+  return(new)
+} </code></p>
+	</div>
+<ul>
+<p>Finalmente, calculamos o GDP em nosso novo subconjunto e criamos um novo quadro de dados com essa coluna adicionada. 
+<p>Isso significa que quando chamamos a função mais tarde, podemos ver o contexto para os valores retornados do GDP,
+<p>o que é muito melhor do que em nossa primeira tentativa onde temos um vetor de números.
+<ul>
+<h1>Desafio 3</h1>
+<p>Teste sua função do GDP calculando o GDP para Nova Zelândia em 1987. Como este diferem do GDP de Nova Zelândia em 1952?
+<p>
+<h1>Solução do Desafio 3</h1>
+<p>GDP da Nova Zelândia em 1987: 65050008703
+<p>GDP da Nova Zelândia em 1952: 21058193787
+<ul>
+<h1>Desafio 4</h1>
+<p>A função de colar pode ser usada para combinar texto, por exemplo:
+<pre><code>best_practice <- c("Write", "programs", "for", "people", "not", "computers")
+paste(best_practice, collapse=" ")
+}</code></pre>
+<p>Escreva uma função chamada fence que leva dois vetores como argumentos, chamados text e wrapper, 
+<p>e imprime o texto envolvido com o wrapper:
+<pre><code>fence(text=best_practice, wrapper="***")</code></pre>
+<p>Nota:a função colar tem um argumento chamado sep, que especifica o separador entre texto. O padrão é um espaço: "". 
+<p>O padrão para colar não é "" espaço.
+<ul>
+<h1>Solução do Desafio 3</h1>
+<p>Escreva uma função chamada fence que leva dois vetores como argumentos, chamados text e wrapper, e devolva o texto com o wrapper:
+<pre><code>fence <- function(text, wrapper){
+  text <- c(wrapper, text, wrapper)
+  result <- paste(text, collapse = " ")
+  return(result)
+}
+best_practice <- c("Write", "programs", "for", "people", "not", "computers")
+fence(text=best_practice, wrapper="***")
+</code></pre>
+<p>
+<h1>dica</h1>
+<p>R tem alguns aspectos únicos que podem ser explorados ao realizar operações mais complicadas. 
+<p>Não estaremos escrevendo nada que exija o conhecimento desses conceitos mais avançados. No futuro, quando você estiver confortável 
+<p>escrevendo funções em R, você pode aprender mais lendo o R Manual de Linguagem ou o capítulo de programação em R Avançada, 
+<p>por Hadley Wickham. Para contexto, R usa a terminologia "ambientes" em vez de quadros.
+<ul>
+<h1>dica Testando e Documentando</h1>
+<p>É importante testar as funções e documentá-las: a documentação ajuda você e outros a entender qual é a finalidade de sua função
+<p>e como usá-la, e é importante certificar-se de que sua função realmente faça o que você acha que ela faz.
+<ul>
+<p>Quando você começar pela primeira vez, seu fluxo de trabalho provavelmente será muito parecido com isto:
+<p>1-Escrever uma função
+<p>2-Partes do comentário da função para documentar seu comportamento
+<p>3-Carregar no arquivo de origem
+<p>4-Experimente para se certificar de que ele se comporta como você espera
+<p>Faça as correções de bugs necessárias
+<6>Salve e Repita.
+<ul>
+<p>A documentação formal para funções, escrita em arquivos .Rd, é transformada na documentação que você vê nos arquivos de ajuda. 
+<p>O pacote roxygen2 permite que os codificadores R escrevam a documentação ao lado do código de função e, em seguida, processe-o nos 
+<p>arquivos .Rd apropriados. Você vai querer mudar para este método mais formal de escrever documentação quando você começar a escrever
+<p>projetos R mais complicados.
+<p>Testes automatizados formais podem ser escritos usando o pacote testthat.
+<ul>
+<h1>Pontos chave</h1>
+<ul>
+<li>Use função para definir uma nova função em R.
+<li>Use parâmetros para passar valores em funções.
+<li>Carregar funções em programas usando fonte.

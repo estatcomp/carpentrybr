@@ -1,0 +1,547 @@
+---
+title: "7. Control Flow"
+output: html_document
+---
+
+# Controle de Fluxo
+
+***
+
+### Visão Geral
+
+**Ensino:** 45 min  
+**Exercicios:** 20 min
+
+**Questões** 
+
+* Como fazer escolhas dependentes dos dados em R?
+* Como posso repetir operações no R?
+
+**Objetivos**
+
+* Escrever instruções condicionais com `if()` e `else()`.
+* Escrever e entender `for()` loops.
+
+***
+
+Muitas vezes, quando estamos programando queremos controlar o fluxo de nossas ações. Isto pode ser feito definindo ações para ocorrer apenas se uma condição ou conjunto de condições forem satisfeitas. Alternativamente, podemos também definir uma ação para ocorrer em determinado número de vezes.
+
+Existem várias maneiras que você pode controlar o fluxo no R. Para instruções condicionais, as abordagens mais utilizadas são as construções:
+
+```{r,eval=FALSE}
+# if
+if (condição é verdadeira) {
+  executar ação
+}
+
+# if ... else
+if (condição é verdadeira) {
+  executar ação
+} else {  # se a condição for falsa,
+  executar ação alternativa
+}
+```
+
+Digamos, por exemplo, que queremos que o R imprima uma mensagem se uma variável x tem um valor em particular:
+
+```{r}
+# amostra de um número aleatório de uma distribuição de Poisson
+# com média (lambda) 8
+
+x <- rpois(1, lambda=8)
+
+if (x >= 10) {
+  print("x é maior ou igual a 10")
+}
+
+x
+
+```
+
+Note que você não pode obter a mesma saída que o seu vizinho, porque vocês podem estar amostrando diferentes números aleatórios a partir da mesma distribuição.
+
+Vamos definir um *seed* para que todos nós possamos gerar o mesmo número de "pseudo-aleatórios", e, em seguida, imprimir mais informações:
+
+```{r}
+set.seed(10)
+x <- rpois(1, lambda=8)
+
+if (x >= 10) {
+  print("x é maior ou igual a 10")
+} else if (x > 5) {
+  print("x é maior que 5")
+} else {
+  print("x é menor que 5")
+}
+
+```
+
+***
+### Dica: Pseudo Números Aleatórios
+
+No caso acima, a função `rpois()` gera um número aleatório a partir de uma distribuição de Poisson com uma média (ou seja, lambda) de 8. A função `set.seed()` garante que todas as máquinas irão gerar o mesmo número de pseudo-aleatórios [(mais sobre números pseudo-aleatórios)](https://en.wikibooks.org/wiki/R_Programming/Random_Number_Generation). Então se definirmos `set.seed(10)`, vemos que x toma o valor 8. Você deve obter o mesmo número.
+
+***
+
+**Importante:** quando R avalia a condição dentro de `if()`, ele está procurando um elemento lógico, isto é, `TRUE` ou `FALSE`. Isso pode causar algumas dores de cabeça para iniciantes. Por exemplo:
+
+```{r}
+x  <-  4 == 3
+if (x) {
+  "4 igual a 3"
+}
+```
+
+Como podemos ver, a mensagem não foi impressa porque o vetor x é `FALSO`
+
+```{r}
+x <- 4 == 3
+x
+```
+
+***
+### Desafio 1
+
+Alguém obteve uma mensagem de aviso como este?
+
+```
+Warning in if (gapminder$year == 2012) {: the condition has length > 1 and
+only the first element will be used
+```
+Se a sua condição for avaliada por um vetor com mais de um elemento lógico, a função `if()` ainda será executado, mas só irá avaliar a condição no primeiro elemento. Aqui você precisa ter certeza de sua condição é de comprimento 1.
+
+***
+
+### Dica: `any()` e `all()`
+
+
+A função `any()` irá retornar `TRUE` se pelo menos um valor `TRUE` for encontrado dentro do vetor, caso contrário ele irá retornar `FALSE`. Isto pode ser utilizado de uma maneira semelhante ao operador `%in%`. A função `all()`, como o nome sugere, só retornará `TRUE` se todos os valores do vetor são verdadeiros.
+
+***
+
+## Operações repetidas
+
+Se você quiser interagir sobre um conjunto de valores, quando a ordem de iteração é importante, e realizar a mesma operação em cada um, um loop `for()` irá fazer o trabalho. Vimos loops `for()` nas lições de *Shell* anteriores. Este é o mais flexível das operações de looping, mas, também o mais difícil de usar corretamente. Evite o uso de loops `for()` ao menos que a ordem de iteração seja importante: isto é, o cálculo em cada iteração depende dos resultados das iterações anteriores.
+
+A estrutura básica de um loop `for()` é:
+
+
+```{r,eval=FALSE}
+for(iterador no conjunto de valores){
+  faça algo
+}
+```
+
+Por exemplo:
+
+```{r}
+for(i in 1:10){
+  print(i)
+}
+```
+
+`1:10` cria um vetor; você pode interagir sobre qualquer outro vetor também.
+
+Podemos usar um loop `for()` aninhado em outro loop `for()` para iterar sobre duas coisas ao mesmo tempo.
+
+
+```{r}
+for(i in 1:5){
+  for(j in c('a', 'b', 'c', 'd', 'e')){
+    print(paste(i,j))
+  }
+}
+
+```
+
+
+Em vez de imprimir os resultados, podemos escrever a saída do **loop* para um novo objeto.
+
+```{r}
+output_vector <- c()
+for(i in 1:5){
+  for(j in c('a', 'b', 'c', 'd', 'e')){
+    temp_output <- paste(i, j)
+    output_vector <- c(output_vector, temp_output)
+  }
+}
+output_vector
+
+```
+
+Esta abordagem pode ser útil, mas "crescer seus resultados" (criando incrementalmente o objeto do resultado) é computacionalmente ineficiente, então o evite quando você está interagindo através de uma série de valores.
+
+***
+
+### Dica: Não"cresça  seus resultados"
+
+Uma das maiores coisas que atrapalha os novatos em R e usuários experientes da mesma forma, é construir um objeto de resultados (vetor, lista, matriz de estrutura de dados) enquanto o seu loop *for* progride. Computadores são muito ruins em lidar com isso, então seus cálculos podem ser muito lerdos. É muito melhor definir um objeto de resultados vazio antes com as dimensões apropriadas. Então, se você sabe que o resultado final será armazenado em uma matriz como a de cima, crie uma matriz vazia com 5 linhas e 5 colunas, em seguida, em cada iteração armazene os resultados no local apropriado.
+
+***
+
+Uma melhor maneira é definir o seu objeto (Vazio) de saída antes de preencher os valores. Este exemplo parece mais complexo, mas ainda é mais eficiente.
+
+```{r}
+output_matrix <- matrix(nrow=5, ncol=5)
+j_vector <- c('a', 'b', 'c', 'd', 'e')
+for(i in 1:5){
+  for(j in 1:5){
+    temp_j_value <- j_vector[j]
+    temp_output <- paste(i, temp_j_value)
+    output_matrix[i, j] <- temp_output
+  }
+}
+output_vector2 <- as.vector(output_matrix)
+output_vector2
+
+```
+
+***
+
+### Dica: While loops
+
+As vezes você precisará repetir uma operação até uma certa condição ocorrer. Você pode fazer isso com `while()` loop.
+
+```{r,eval=FALSE}
+ while(essa condição verdadeira){
+  faça algo
+}
+
+```
+
+Como exemplo, tempo um *while loop* que gera números aleatórios a partir de uma distribuição uniforme (runif() function) entre 0 e 1 até que apareça um que seja menor que 0,1.
+
+```{r}
+z <- 1
+while(z > 0.1){
+  z <- runif(1)
+  print(z)
+}
+```
+
+`while()` loops  nem sempre serão apropriadas. Você deve ser cauteloso para não acabar em um loop infinito, porque sua condição não foi alcançada.
+
+***
+
+<input type=button id=toggle_d71 value="Desafio 2"></input>
+
+
+Compare os objetos `output_vector` e `output_vector2`. Eles são iguais? Se não, por que não? Como você poderia mudar o último bloco do código para fazer `output_vector2` ser igual a `output_vector`?
+
+
+<input type=button id=toggle_d72 value="Resposta do desafio 2"></input>
+
+
+Podemos checar se os dois vetoes são idênticos usando a função all():
+
+
+```{r}
+all(output_vector == output_vector2)
+
+```
+
+Contudo, todos os elementos de `output_vector` podem ser encontrados no `output_vector2`:
+
+
+```{r}
+all(output_vector %in% output_vector2)
+
+```
+
+e vice versa:
+
+```{r}
+all(output_vector2 %in% output_vector)
+
+```
+
+Portanto, os elementos em `output_vector` e `output_vector2` estão apenas ordenados de forma diferente. Isso porque a saída de `as.vector()` são os elementos  de uma matriz de entrada pela sua coluna. Olhando `output_matrix`, podemos notar que queremos seus elementos por linha. A solução é transpor a `output_matrix`. Podemos fazer isso usando a função transposta `t()` ou colocando os elementos na ordem certa. A primeira solução requer mudar a original.
+
+
+```{r}
+output_vector2 <- as.vector(output_matrix)
+
+```
+
+em 
+
+```{r}
+output_vector2 <- as.vector(t(output_matrix))
+
+```
+
+A segunda solução requer mudar
+
+```{r}
+output_matrix[i, j] <- temp_output
+
+```
+
+em
+
+```{r}
+output_matrix[j, i] <- temp_output
+
+```
+
+<script>
+$("#toggle_d71").parent().next().hide();
+
+$("#toggle_d71").on( "click", function(){
+  $("#toggle_d71").parent().next().toggle();
+  } );
+$("#toggle_d72").parent().next().hide();
+$("#toggle_d72").parent().next().next().hide();
+$("#toggle_d72").parent().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d72").on( "click", function(){
+  $("#toggle_d72").parent().next().toggle();
+  $("#toggle_d72").parent().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d72").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+***
+
+<input type=button id=toggle_d73 value="Desafio 3"></input>
+
+Escreva um script que que faça um loop nos dados `gapminder` por continente e imprima se a média da expectativa de vida é menor ou maior do que 50 anos.
+
+<input type=button id=toggle_d74 value="Resposta do desafio 3"></input>
+
+**Passo 1:** Queremos ter certeza que conseguimos extrair todos os valores únicos do vetor continente.
+
+```{r,eval=FALSE}
+gapminder <- read.csv("data/gapminder-FiveYearData.csv")
+unique(gapminder$continent)
+```
+
+**Passo 2:** Devemos também fazer um loop em cada um dos continentes e calcular a média da expectativa de vida para cada subconjunto dos dados. Podemos fazer isso da seguinte maneira:
+
+1. Faça um loop em cada um dos valores únicos de `continent`.
+2. Para cada valor de `continent`, crie uma variável temporária que armazene a expectativa de vida para o subconjunto,
+3. Retorne a a expectativa de vida calculada imprimindo o resultado:
+
+```{r,eval=FALSE}
+for( iContinent in unique(gapminder$continent) ){
+   temporario <- mean(subset(gapminder, continent==iContinent)$lifeExp)
+   cat("A média da expectativa de vida em", iContinent, "é", temporario, "\n")
+   rm(temporario)
+}
+```
+
+**Passo 3:** O Exercício só quer que imprima se a média da expectativa de vida é maior ou menor do que 50. Então precisamos adicionar uma condição `if` antes de imprimir, que avalia se a média da expectativa de vida calculadaé menor ou maior do que um limiar, e imprima uma saída condicionada ao resultado. Precisamos alterar (3):
+
+3a. Se a expectativa de vida calculada for menor que um valor limiar (50 anos), retorne o continente e a afirmação que a expectativa de vida é menor que o valor limiar, caso contrário retorne o continente e afirmação que a expectativa de vida é maior que o valor limiar:
+
+```{r,eval=FALSE}
+valorlimiar <- 50
+> >
+for( iContinent in unique(gapminder$continent) ){
+   temporario <- mean(subset(gapminder, continent==iContinent)$lifeExp)
+   
+   if(temporario < valorlimiar){
+       cat("A média da expectativa de vida em", iContinent, "é menor que", valorlimiar, "\n")
+   }
+   else{
+       cat("A média da expectativa de vida em", iContinent, "é maior que", valorlimiar, "\n")
+        } # fim da condição if else 
+   rm(temporario)
+   } # fim do loop
+> >
+```
+
+<script>
+$("#toggle_d73").parent().next().hide();
+
+$("#toggle_d73").on( "click", function(){
+  $("#toggle_d73").parent().next().toggle();
+  } );
+$("#toggle_d74").parent().next().hide();
+$("#toggle_d74").parent().next().next().hide();
+$("#toggle_d74").parent().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d74").on( "click", function(){
+  $("#toggle_d74").parent().next().toggle();
+  $("#toggle_d74").parent().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d74").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+***
+
+<input type=button id=toggle_d75 value="Desafio 4"></input>
+
+Modifique o script do Desafio 3 para fazer loop em cada país. Mas deverá imprimir se a expectativa de vida é menor do que 50 anos, entre 50 e 70 anos, ou maior do que 70 anos.
+
+<input type=button id=toggle_d76 value="Resposta do desafio 4"></input>
+
+Nós modificamos a solução do Desafio 3 adicionando 2 valores limiares (limiar inferior e limiar superior) e estendendo as instruções `if-else`:
+
+
+```{r,eval=FALSE}
+ limiarinferior <- 50
+ limiarsuperior <- 70
+ 
+for( iCountry in unique(gapminder$country) ){
+    temporario <- mean(subset(gapminder, country==iCountry)$lifeExp)
+    
+    if(temporario < limiarinferior){
+        cat("A média da expectativa de vida em", iCountry, "é menor que", limiarinferior, "\n")
+    }
+    else if(temporario > limiarinferior && temporario < limiarsuperior){
+        cat("A média da expectativa de vida em", iCountry, "está entre", limiarinferior, "e", limiarsuperior, "\n")
+    }
+    else{
+        cat("A média da expectativa de vida em", iCountry, "é maior que", limiarsuperior, "\n")
+    }
+    rm(temporario)
+}
+}
+```
+
+<script>
+$("#toggle_d75").parent().next().hide();
+
+$("#toggle_d75").on( "click", function(){
+  $("#toggle_d75").parent().next().toggle();
+  } );
+$("#toggle_d76").parent().next().hide();
+$("#toggle_d76").parent().next().next().hide();
+$("#toggle_d76").on( "click", function(){
+  $("#toggle_d76").parent().next().toggle();
+  $("#toggle_d76").parent().next().next().toggle();
+} );
+</script>
+
+***
+
+
+<input type=button id=toggle_d77 value="Desafio 5 - Avançado"></input>
+
+Escreva um script que faça loop em cada país da base de dados `gapminder`, teste se o país começa com "B", e faça um gráfico de linha (Expectativa de vida X Tempo) se a média da expectativa de vida é menor que 50 anos.
+
+<input type=button id=toggle_d78 value="Resposta do desafio 5"></input>
+
+Vamos usar o comando `grep`, que foi introduzido na lição *Unix Shell* para encontrar quais países começam com "B". Vamos entender como fazer isso primeiro. Seguindo a seção da lição *Unix Shell* somos tentados a tentar o seguinte:
+
+
+```{r,eval=FALSE}
+grep("^B", unique(gapminder$country))
+```
+
+Mas quando avaliamos  este comando ele retorna os indices da variável fator país que começa com "B". Para conseguir os valores, devemos adicionar a opção `value=TRUE` para o comando `grep`:
+
+```{r,eval=FALSE}
+grep("^B", unique(gapminder$country), value=TRUE)
+```
+
+Vamos agora armazenar esses países em uma variável `paisesCandidatos`, e então fazer um loop em cada entrada da variável. Dentro do loop, avaliamos a média da expectativa de vida para cada país, e se a média é menor do que 50 anos usamos *base-plot* para plotar a evolução da média da expectativa de vida:
+
+
+```{r,eval=FALSE}
+paisesCandidatos <- grep("^B", unique(gapminder$country), value=TRUE)
+> >
+for( iCountry in paisesCandidatos){
+    temporario<- mean(subset(gapminder, country==iCountry)$lifeExp)
+    
+    if(temporario < vamorlimiar){
+        cat("A média da expectativa de vida em", iCountry, "é menor que", valorlimiar, "plotando o gráfico de expectativa de vida... \n")
+        
+        with(subset(gapminder, country==iCountry),
+                plot(year,lifeExp,
+                     type="o",
+                     main = paste("Expectativa de vida em", iCountry, "ao longo do tempo"),
+                     ylab = "Expectativa de vida",
+                     xlab = "Ano"
+                   ) # final do "plot"
+              ) # final do "with"
+    } # final do "loop"
+    rm(temporario)
+ }```
+> {: .solution}
+{: .challenge}
+```
+
+<script>
+$("#toggle_d77").parent().next().hide();
+
+$("#toggle_d77").on( "click", function(){
+  $("#toggle_d77").parent().next().toggle();
+  } );
+$("#toggle_d78").parent().next().hide();
+$("#toggle_d78").parent().next().next().hide();
+$("#toggle_d78").parent().next().next().next().hide();
+$("#toggle_d78").parent().next().next().next().next().hide();
+$("#toggle_d78").parent().next().next().next().next().next().hide();
+$("#toggle_d78").parent().next().next().next().next().next().next().hide();
+$("#toggle_d78").on( "click", function(){
+  $("#toggle_d78").parent().next().toggle();
+  $("#toggle_d78").parent().next().next().toggle();
+  $("#toggle_d78").parent().next().next().next().toggle();
+  $("#toggle_d78").parent().next().next().next().next().toggle();
+  $("#toggle_d78").parent().next().next().next().next().next().toggle();
+  $("#toggle_d78").parent().next().next().next().next().next().next().toggle();
+ } );
+</script>
+
+***
+
+**PONTOS CHAVE**
+
+* Use `if` e `else` para fazer escolhas.
+* Use `for` para repetir operações.
+
+

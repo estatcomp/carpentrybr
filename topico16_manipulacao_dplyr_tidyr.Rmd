@@ -1,0 +1,132 @@
+---
+atividade1
+Elainy
+RA:190694
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+Carregando os pacotes necessários e o banco de dados
+---
+
+```{r, include=FALSE} 
+
+library(ggplot2)
+library(dplyr)
+
+ gapminder <- read.csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv")
+
+```
+
+
+## Combinando os pacotes dplyr e ggplot2
+
+ Na lição sobre plotagem de gráficos, vimos como criar uma figura com vários painéis. O agrupamento dos painéis foi feito com a ajuda do pacote *ggplot2*. Aqui está o código que usamos (com alguns comentários extras):
+
+```{r,}
+
+# Obtendo a letra inicial de cada país
+starts.with <- substr(gapminder$country, start = 1, stop = 1)
+# Filtrando os países que começam com letra "A" ou "Z"
+az.countries <- gapminder[starts.with %in% c("A", "Z"), ]
+# Construindo o gráfico
+ggplot(data = az.countries, aes(x = year, y = lifeExp, color = continent)) +
+  geom_line() + facet_wrap( ~ country)
+
+```
+
+Esse código cria o gráfico certo, porém ele também cria algumas variáveis (starts.with  e az.countries), que talvez nem as utilizaremos mais. Da mesma forma que usamos %>% para passar dados ao longo das funções *dplyr*, podemos utilizá-lo também para passar dados para *ggplot()*. Como %>%  substitui o primeiro argumento em uma função, não precisamos especificar o argumento data na função *ggplot()*. Combinando as funções *dplyr* e *ggplot2* podemos fazer a mesma figura sem criar novas variáveis ou modificar os dados.
+
+```{r,}
+
+gapminder %>% 
+   # Obtendo a letra inicial de cada país 
+   mutate(startsWith = substr(country, start = 1, stop = 1)) %>% 
+   # Filtrando os países que começam com letra "A" ou "Z"
+   filter(startsWith %in% c("A", "Z")) %>%
+   # Construindo o gráfico
+   ggplot(aes(x = year, y = lifeExp, color = continent)) + 
+   geom_line() + 
+   facet_wrap( ~ country)
+
+```
+
+As funções do *dplyr* também nos ajudam a  simplificar as coisas, por exemplo, podemos combinar os dois primeiros passos:
+
+```{r,}
+
+gapminder %>%
+    # Filtrando os países que começam com letra "A" ou "Z"
+        filter(substr(country, start = 1, stop = 1) %in% c("A", "Z")) %>%
+        # Construindo o gráfico
+        ggplot(aes(x = year, y = lifeExp, color = continent)) + 
+        geom_line() + 
+        facet_wrap( ~ country)
+
+```
+
+**Desafio**
+
+Para cada continente, calcule a expectativa de vida média em 2002 de 2 países selecionados aleatoriamente. Em seguida, organize os nomes dos continentes em ordem inversa. Dica: Use as funções do *dplyr* *arrange()* e *sample_n()*, elas têm sintaxe similar a outras funções do *dplyr*.
+
+**Solução do desafio**
+
+```{r,}
+
+lifeExp_2countries_bycontinents <- gapminder %>%
+   filter(year==2002) %>%
+   group_by(continent) %>%
+   sample_n(2) %>%
+   summarize(mean_lifeExp=mean(lifeExp)) %>%
+   arrange(desc(mean_lifeExp))
+
+```
+
+##Outros grandes recursos
+
+-  [Arquivo de consulta - Manipulação de dados](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+- [Introdução ao dplyr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
+
+- [Manipulação de dados com R e RStudio](https://www.rstudio.com/resources/webinars/data-wrangling-with-r-and-rstudio/)
+
+
+
+##Pontos-chave
+
+- Use o pacote *dplyr* para manipular os dataframes.
+- Use a função *select()* para escolher variáveis de um dataframe.
+- Use a função *filter()* para escolher dados com base em valores.
+- Use *group_by()* e *summarize()* para trabalhar com subconjuntos de dados.
+- Use *mutate()* para criar novas variáveis.
+
+
+
+##Manipulação de dataframe com o pacote tidyr
+
+
+**Visão Geral**
+ 
+- **Lição:** 30 min
+- **Exercício:** 15 min
+- **Questões:** Como eu mudo o formato de um dataframe?
+- **Objetivos:** entender os conceitos de formatos de dados 'long' e 'wide' e ser capaz de mudar de um para o outro com o pacote *tidyr*.
+
+
+Os pesquisadores muitas vezes querem alterar seus dados do formato 'wide' para 'long', ou vice-versa. O formato 'long' é onde:
+
+- Cada coluna é uma variável
+- Cada linha é uma observação
+
+No formato 'long', normalmente você tem uma coluna para a variável observada e as outras colunas são variáveis  ID.
+
+No formato 'wide' cada linha é geralmente um site / assunto / paciente e você tem diversas observações contendo o mesmo tipo de dados. Estas podem ser observações repetidas ao longo do tempo, ou observação de múltiplas variáveis (ou uma mistura de ambos). Você pode achar que a entrada de dados pode ser mais simples ou algumas outras aplicações podem preferir o formato 'wide'. Entretanto, muitas das funções de R foram projetadas assumindo que você tem dados de formato 'long'. Este tutorial irá ajudá-lo a transformar seus dados de forma eficiente, independentemente do formato original.
+
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/14-tidyr-fig1.png)
+
+
+
+Esses formatos de dados influenciam principalmente a legibilidade. Para nós seres humanos, o formato 'wide' é, em geral, mais intuitivo, já que na maioria das vezes podemos visualizar mais dados na tela devido à sua forma. No entanto, o formato 'long' é mais legível pela máquina e está mais próximo da formatação de bases de dados. As variáveis  ID em nossos bancos de dados são semelhantes aos campos em um banco de dados e as variáveis observadas são como os valores do banco de dados.

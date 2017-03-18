@@ -1,0 +1,279 @@
+---
+title: "Creating_Publication-Quality_Graphics"
+author: "Nícolas Romano"
+date: "9 de março de 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Visão geral
+
+    Aula: 60 min
+    Exercícios: 20 min
+    Perguntas
+      
+      Como posso criar gráficos de qualidade para publicação em R?  
+      
+    Objetivos
+     
+      Aprender a usar o ggplot2 para gerar gráficos de qualidade para publicação.
+      Para entender a gramática básica de gráficos, incluindo as camadas de estética com *aesthetic* e de geometria com *geometry*, adicionando estatísticas com *statistics*, usando transformações de escala com *scale transformation*, dividindo com cor ou painéis por grupos com *grouping*.
+         
+         
+
+Plotar nossos dados é uma das melhores maneiras de explorá-los rapidamente e também as várias relações entre variáveis.
+
+Existem três sistemas de plotagem principais no R, o [base plotting system](http://www.statmethods.net/graphs/), o pacote [lattice](http://www.statmethods.net/advgraphs/trellis.html) e o pacote [ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html).
+
+Hoje vamos aprender sobre o pacote ggplot2, porque é o mais eficaz para a criação de gráficos de qualidade de publicação.
+
+ggplot2 é construído sobre a gramática de gráficos, a ideia de que qualquer plot pode ser expresso a partir do mesmo conjunto de componentes: um conjunto de dados, um sistema de coordenadas e um conjunto de geoms - a representação visual dos *data points*.
+
+A chave para entender ggplot2 é pensar em uma figura em camadas. Essa ideia pode ser familiar para você se você usou programas de edição de imagem como Photoshop, Illustrator ou Inkscape.
+
+Vamos começar com um exemplo:
+
+```{r ggplot2}
+#install.packages("ggplot2")
+library("ggplot2")
+gapminder <- read.csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv",stringsAsFactors = F)
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point()
+```
+
+Então a primeira coisa que fazemos é chamar a função ggplot. Esta função permite que R saiba que estamos criando um novo *plot* e que qualquer dos argumentos que damos à função ggplot são as opções globais para o *plot*: elas se aplicam a todas as camadas do gráfico.
+
+Passamos em dois argumentos para ggplot. Primeiro, dizemos ao ggplot quais dados queremos mostrar na nossa figura, neste exemplo os dados gapminder que lemos anteriormente. Para o segundo argumento passamos na função **aes**, que diz ao ggplot como varia o *data map* para as propriedades estéticas da figura, neste caso as localizações de x e y. Aqui nós dissemos ao ggplot que queremos *plotar* a coluna "gdpPercap" do data frame gapminder no eixo x, e a coluna "lifeExp" no eixo y. Observe que não precisamos explicitamente passar essas colunas (por exemplo, x = gapminder [, "gdpPercap"]), isso ocorre porque o ggplot é inteligente o suficiente para saber olhar os dados dessa coluna!
+
+Por si só, a chamada para ggplot não é suficiente para desenhar uma figura:
+
+```{r ggplot2_nao_inteligente}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+```
+
+Precisamos dizer ao ggplot como queremos representar visualmente os dados, o que fazemos adicionando uma nova camada geom. No nosso exemplo, usamos geom_point, que diz ao ggplot que queremos representar visualmente a relação entre x e y como um scatterplot dos pontos:
+
+```{r ggplot2_2}
+
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point ()
+```
+
+    Desafio 1
+
+    Modifique o exemplo para que a figura visualize como a expectativa de vida mudou ao longo do tempo:
+
+```{r ggplot2_desafio, eval=FALSE}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + geom_point ()
+```
+
+    Dica: o conjunto de dados gapminder tem uma coluna chamada "year", que deve aparecer no eixo x.
+
+        Solução para Desafio 1
+
+        Modifique o exemplo para que a figura visualize como a expectativa de vida mudou ao longo do tempo:
+
+```{r ggplot2_desafio_resposta}
+ggplot(data = gapminder, aes(x = year, y = lifeExp)) + geom_point ()
+```
+
+
+
+    Desafio 2
+
+    Nos exemplos anteriores e no desafio usamos a função aes para dizer ao geom do scatterplot sobre as posições x e y de cada ponto. Outra propriedade *aesthetic* que podemos modificar é a cor do ponto. Modifique o código do desafio anterior para colorir os pontos pela coluna "continent". Que tendências você vê nos dados? Eles são o que você esperava?
+
+        Solução para o desafio 2
+
+        Nos exemplos anteriores e no desafio usamos a função aes para dizer ao geom do scatterplot sobre as posições x e y de cada ponto. Outra propriedade *aesthetic* que podemos modificar é a cor do ponto. Modifique o código do desafio anterior para colorir os pontos pela coluna "continente". Que tendências você vê nos dados? Eles são o que você esperava?
+
+```{r ggplot2_desafio2_resposta}
+ggplot(data = gapminder, aes(x = year, y = lifeExp, color=continent)) +
+  geom_point()
+```          
+          
+          
+##Camadas (Layers)
+
+Usar um scatterplot provavelmente não é o melhor modo de visualizar a mudança ao longo do tempo. Em vez disso, vamos dizer ao ggplot para visualizar os dados como um gráfico de linha:
+
+```{r ggplot2_Layers_linha}
+ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country, color=continent)) +
+  geom_line()
+``` 
+
+Em vez de adicionar uma camada geom_point, adicionamos uma camada geom_line. Nós adicionamos pelo *aesthetic*, que diz ao ggplot para desenhar uma linha para cada país.
+
+Mas e se quisermos visualizar linhas e pontos na trama? Podemos simplesmente adicionar outra camada ao *plot*:
+
+```{r ggplot2_Layers_linha_pontos}
+ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country, color=continent)) +
+  geom_line() + geom_point()
+``` 
+
+É importante notar que cada camada é desenhada em cima da camada anterior. Neste exemplo, os pontos foram desenhados no topo das linhas. Aqui está uma demonstração:
+
+```{r ggplot2_Layers_linha_pontospretos}
+ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country)) +
+  geom_line(aes(color=continent)) + geom_point()
+``` 
+
+Neste exemplo, o mapeamento *aesthetic* da cor foi movido das opções de plotagem global em ggplot para a camada geom_line, de modo que ela não mais se aplica aos pontos. Agora podemos ver claramente que os pontos são desenhados no topo das linhas.
+
+    Dica: Definir um *aesthetic* para um valor em vez de um mapeamento
+
+    Até agora, vimos como usar um *aesthetic* (como a cor) como um mapeamento para uma variável nos dados. Por exemplo, quando usamos geom_line(aes(color = continent)), ggplot dará uma cor diferente para cada continente. Mas e se quisermos mudar a cor de todas as linhas para o azul? Você pode pensar que geom_line(aes(color = "blue")) deve funcionar, mas não. Como não queremos criar um mapeamento para uma variável específica, simplesmente movemos a especificação de cor para fora da função aes (), como esta: geom_line(color = "blue").
+
+    Desafio 3
+
+    Alterne a ordem das camadas de ponto e linha do exemplo anterior. O que aconteceu?
+
+        Solução para o desafio 3
+
+        Alterne a ordem das camadas de ponto e linha do exemplo anterior. O que aconteceu?
+
+```{r ggplot2_Layers_pontospretos_linha}
+ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country)) + 
+  geom_point() + geom_line(aes(color=continent)) 
+``` 
+
+        As linhas agora são desenhadas sobre os pontos!
+        
+        
+##Transformações e estatísticas
+
+O ggplot também facilita a sobreposição de modelos estatísticos sobre os dados. Para demonstrar, vamos voltar ao nosso primeiro exemplo:
+
+```{r ggplot2_colorido}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, color=continent)) +
+  geom_point()
+```
+
+Atualmente, é difícil ver a relação entre os pontos devido a alguns outliers fortes no PIB per capita. Podemos alterar a escala de unidades no eixo x usando as funções de escala (*scale*). Estes controlam o mapeamento entre os valores de dados e os valores visuais de uma estética. Podemos também modificar a transparência dos pontos, usando a função *alpha*, que é especialmente útil quando você tem uma grande quantidade de dados que é muito agrupado.
+
+```{r ggplot2_semoutlier}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.5) + scale_x_log10()
+```
+
+A função log10 aplicou uma transformação para os valores da coluna gdpPercap antes de os renderizar no gráfico, de modo que cada múltiplo de 10 agora apenas corresponde a um aumento em 1 na escala transformada, por exemplo, um PIB per capita de 1.000 é agora 3 no eixo y, um valor de 10.000 corresponde a 4 no eixo y e assim por diante. Isso torna mais fácil visualizar a disseminação dos dados no eixo x.
+
+    Lembrete de Sugestão: Definir um *aesthetic* para um valor em vez de um mapeamento
+
+    Observe que usamos geom_point(alpha = 0.5). Como a dica anterior mencionada, usando um ajuste fora da função aes() fará com que esse valor seja usado para todos os pontos, que é o que queremos neste caso. Mas, como qualquer outro ajuste *aesthetic*, alpha também pode ser mapeado para uma variável nos dados. Por exemplo, podemos dar uma transparência diferente para cada continente com geom_point(aes(alfa = continent)).
+
+Podemos ajustar uma relação simples aos dados adicionando outra camada, geom_smooth:
+
+```{r ggplot2_correlacao}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() + scale_x_log10() + geom_smooth(method="lm")
+```
+
+Podemos tornar a linha mais espessa, definindo o *size* *aesthetic* na camada geom_smooth:
+
+```{r ggplot2_correlacao2}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() + scale_x_log10() + geom_smooth(method="lm", size=1.5)
+```
+
+Há duas maneiras que um *aesthetic* pode ser especificado. Aqui definimos o *size* *aesthetic* passando-o como um argumento para geom_smooth. Anteriormente, na lição, usamos a função *aes* para definir um mapeamento entre variáveis de dados e sua representação visual.
+
+    Desafio 4a
+
+    Modifique a cor e o tamanho dos pontos na camada de ponto no exemplo anterior.
+
+    Dica: não use a função aes.
+
+        Solução para desafio 4a
+
+        Modifique a cor e o tamanho dos pontos na camada de ponto no exemplo anterior.
+
+        Dica: não use a função aes.
+
+```{r ggplot2_desafio4a}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(size=3, color="orange") + scale_x_log10() +
+  geom_smooth(method="lm", size=1.5)
+```
+
+
+    Desafio 4b
+
+    Modifique sua solução para o Desafio 4a para que os pontos sejam agora uma forma diferente e sejam coloridos por continente com novas linhas de tendência.
+    Dica: O argumento de cor pode ser usado dentro de aes.
+
+        Solução para desafiar 4b
+
+        Modifique o Desafio 4 para que os pontos sejam agora uma forma diferente e sejam coloridos por continente com novas linhas de tendência.
+
+        Dica: O argumento de cor pode ser usado dentro de aes.
+
+```{r ggplot2_desafio4b}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
+geom_point(size=3, pch=17) + scale_x_log10() +
+geom_smooth(method="lm", size=1.5)
+```
+        
+##Figuras Multi-Panel (painel múltiplo)
+
+Anteriormente, visualizamos a mudança na expectativa de vida ao longo do tempo em todos os países em um único gráfico. Alternativamente, podemos dividir isso em vários painéis adicionando uma camada de painéis *facet*. Focalizando apenas aqueles países com nomes que começam com a letra "A" ou "Z".
+
+    Dica
+
+    Começamos fazendo um subconjunto dos dados. Usamos a função *substr* para extrair uma parte de uma seqüência de caracteres; Neste caso, as letras que ocorrem das posições *start* até *stop*, inclusive, do vetor gapminder$country. O operador %in% permite-nos fazer comparações múltiplas ao invés de escrever longas condições de subconjunto (neste caso, starts.with %in% c("A", "Z") é equivalente a starts.with == "A" | starts.with == "Z")
+
+```{r ggplot2_MultiPanel}
+starts.with <- substr(gapminder$country, start = 1, stop = 1)
+az.countries <- gapminder[starts.with %in% c("A", "Z"), ]
+ggplot(data = az.countries, aes(x = year, y = lifeExp, color=continent)) +
+  geom_line() + facet_wrap( ~ country)
+```
+
+A camada facet_wrap tomou uma "fórmula" como seu argumento, denotado pelo til (~). Isso informa o R para desenhar um painel para cada valor exclusivo na coluna de país do conjunto de dados gapminder.
+
+##Modificando o texto
+
+Para limpar esta figura para uma publicação, precisamos alterar alguns dos elementos de texto. O eixo x é muito desordenado e no eixo y deve estar escrito "Espectativa de vida", em vez do nome da coluna da data frame, além disso recomenda-se, colocar o nome do gráfico, e legendas na língua da publicação.
+
+Podemos fazer isso adicionando um par de camadas diferentes. A camada **theme** controla o texto do eixo e o tamanho geral do texto, e existem camadas especiais para alterar os rótulos dos eixos. Para alterar o título da legenda, precisamos usar a camada **scales**.
+
+```{r ggplot2_texto}
+ggplot(data = az.countries, aes(x = year, y = lifeExp, color=continent)) +
+  geom_line() + facet_wrap( ~ country) +
+  xlab("Ano") + ylab("Espectativa de vida") + ggtitle("Figura 1") +
+  scale_colour_discrete(name="Continente") +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+```
+
+Este é um gostinho do que você pode fazer com ggplot2. RStudio fornece uma [cheat sheet (Folha de macetes)](http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf) realmente útil das diferentes camadas disponíveis, e documentação mais extensa está disponível no [site ggplot2](http://docs.ggplot2.org/current/). Finalmente, se você não tem ideia de como mudar algo, uma rápida pesquisa do Google geralmente irá enviar para uma pergunta relevante e resposta no Stack Overflow com código reutilizável para modificar!
+
+    Desafio 5
+
+    Criar um gráfico de densidade do PIB per capita, preenchido por continente.
+
+    Avançado:
+
+        Transforme o eixo x para visualizar melhor a propagação de dados.
+        Adicione uma camada *facet* ao painel de gráficos de densidade por ano.
+
+        Solução para contestar 5
+
+    Criar um gráfico de densidade do PIB per capita, preenchido por continente.
+
+    Avançado:
+
+        Transforme o eixo x para visualizar melhor a propagação de dados.
+        Adicione uma camada *facet* ao painel de gráficos de densidade por ano.
+        
+```{r ggplot2_desafio5}
+ggplot(data = gapminder, aes(x = gdpPercap, fill=continent)) +
+ geom_density(alpha=0.6) + facet_wrap( ~ year) + scale_x_log10()
+```
+
+    Pontos chave
+
+        Use ggplot2 para criar gráficos.
+        Pense nos gráficos em camadas: *aesthetics*, *geometry*, *statistics*, *scale transformation*, and *grouping*.

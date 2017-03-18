@@ -1,0 +1,288 @@
+---
+title: "Split-Apply-Combine"
+author: "Katherine Loor"
+date: "9 de marzo de 2017"
+output: 
+    rmarkdown::html_document:
+    theme: cerulean
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Split-Apply-Combine
+
+***
+###Visão Geral
+* **Ensino:** 30 mim
+* **Exercícios:** 30 mim 
+* **Questões:**
+    + Como posso fazer diferentes cálculos em diferentes conjuntos de dados?  
+* **Objetivos:**
+    + Poder usar a estratégia de split-apply-combine para análise de dados.  
+
+***
+
+Anteriormente analisamos como usar funções para simplificar o seu código. Nós definimos a função `calcGDP`, que pega o conjunto de dados gapminder, e multiplica a população com a coluna do PIB per capita. Também definimos argumentos adicionais para que possamos filtrar por `year` e `country`:
+
+```{r echo = TRUE}
+# Takes a dataset and multiplies the population column
+# with the GDP per capita column.
+calcGDP <- function(dat, year=NULL, country=NULL) {
+  if(!is.null(year)) {
+    dat <- dat[dat$year %in% year, ]
+  }
+  if (!is.null(country)) {
+    dat <- dat[dat$country %in% country,]
+  }
+  gdp <- dat$pop * dat$gdpPercap
+
+  new <- cbind(dat, gdp=gdp)
+  return(new)
+}
+```
+
+Uma tarefa comum que encontrará ao trabalhar com dados, é que você desejará executar cálculos em diferentes grupos dentro dos dados. Acima, estávamos calculando simplesmente o PIB multiplicando duas colunas juntas. Mas e se quisermos calcular o PIB médio por continente? 
+
+Deveríamos executar `calcGPD` e então pegar as médias por cada continente:
+
+```{r echo = FALSE}
+gapminder<-read.csv(file="C:/Users/kloor/Documents/git/Pruebas/data/gapminder-FiveYearData.csv")
+```
+
+```{r echo = TRUE}
+withGDP <- calcGDP(gapminder)
+mean(withGDP[withGDP$continent == "Africa", "gdp"])
+```
+
+```{r echo = TRUE}
+mean(withGDP[withGDP$continent == "Americas", "gdp"])
+```
+
+```{r echo = TRUE}
+mean(withGDP[withGDP$continent == "Asia", "gdp"])
+```
+
+Mas isso não é *agradável*. Sim, usando uma função, você pode reduzir uma quantidade substancial de repetições. Isso **é** bom. Porém ainda há repetição. Repetindo custará-lhe tempo, agora e mais tarde, e potencialmente introduzirá alguns erros desagradáveis.
+
+Poderíamos escrever uma nova função que seja flexível como `calcGDP`, mas isso também requer uma quantidade substancial de esforço e testes até estar pronta.
+
+O problema que estamos revelando aqui é conhecido como "split-apply-combine":
+
+![](http://i.imgur.com/yjNkiwL.png)
+
+Nós queremos *dividir* nossos dados em grupos, neste caso continentes, *aplicar* alguns cálculos nesse grupo, e depois opcionalmente *combinar* os resultados. 
+
+##O pacote plyr
+Para alguns de vocês que tem usado R antes, poderia estar familiarizado com o uso de família de funções. Agora, vamos apresentar outro método para resolver o problema “split-apply-combine”. O pacote [plyr](http://had.co.nz/plyr/) fornece um conjunto de funções que encontraremos mais agradáveis para resolver este problema.
+
+Instalamos este pacote em uma tarefa anterior. Vamos carregá-lo agora:
+
+```{r echo = TRUE}
+library(plyr)
+```
+
+Plyr tem funções para operações entre `lists`, `data.frames` e `arrays` (matrizes, ou n-dimensional vetores). Cada função executa:
+1. Uma operação de divisão.
+2. Aplique uma função em cada divisão.
+3. Recombine os dados da saída como um único objeto de dados.
+
+As funções são chamadas baseadas na estrutura dos dados elas esperam como entrada, e a estrutura dos dados que se deseja como saída: [a]rray, [l]ist, ou [d]ata.frame. A primeira letra corresponde à  estrutura dos dados da entrada, a segunda letra à estrutura dos dados da saída, e o resto da função é chamada "ply".
+
+Isso nós dá 9 funções principais **ply. Existem três funções adicionais que só executarão as etapas de divisão e aplicação e não qualquer etapa de combinação. Eles são chamados por seu tipo de dados de entrada e representam uma saída nula por um _ (veja a tabela).
+
+Note aqui que o uso dos "arrays" de plyr é diferente que em R, um "array" em ply pode incluir um vetor ou uma matriz.
+![](http://nicercode.github.io/2014-02-13-UNSW/lessons/40-repeating/full_apply_suite.png)
+
+Cada uma das funções de xxply (daply, ddply, llply, laply, ...) tem a mesma estrutura e tem 4 características e estruturas chaves:
+
+```
+xxply(.data, .variables, .fun)
+```
+
+A primeira letra do nome da função dá o tipo de entrada e o segundo dá o tipo de dado da saída.
+* .data - dá o objeto de dados a ser processado
+* .variables - identifica as variáveis de divisão
+* .fun - dá a função que será chamada em cada fase
+
+Agora podemos rapidamente calcular a média do PIB por continente:
+
+```{r echo = TRUE, include=TRUE}
+ddply(
+ .data = calcGDP(gapminder),
+ .variables = "continent",
+ .fun = function(x) mean(x$gdp)
+)
+```
+
+Vamos revisar o código anterior:
+
+* A função `ddply` se alimenta de um `data.frame` (função começa com **d**) e retorna outro `data.frame` (segunda letra é **d**) 
+* O primeiro argumento que demos foi a `data.frame` com o qual queríamos operar: neste caso os dados de gapminder. Chamamos primeiro `calcGDP` tal que ele tería agregada uma coluna adicional `gdp`. 
+* O segundo argumento indicou nossos critérios de divisão: neste caso a coluna "continent". Note que nós demos o nome da coluna, não o valor da coluna como a gente tem feito anteriormente com subconjuntos. Plyr cuida desses detalhes de implementação por você.
+* O terceiro argumento é a função que queremos aplicar a cada grupo de dados. Temos que definir aqui nossa propria função curta: cada subconjunto de dados é armazenado em x, o primeiro argumento de nossa função. Esta é uma função anônima: não a definimos em outro lugar, e ela não tem nome. Ela só existe dentro do âmbito de nossa chamada a ddply. 
+
+E se quisermos uma estrutura de dados de saída diferente?:
+
+```{r echo = TRUE, include=TRUE}
+dlply(
+ .data = calcGDP(gapminder),
+ .variables = "continent",
+ .fun = function(x) mean(x$gdp)
+)
+```
+
+Nós chamamos a mesma função novamente, mas mudamos a segunda letra para uma l, assim a saída obtida foi uma lista.
+
+Podemos também especificar várias colunas para agrupar:
+
+```{r echo = TRUE, include=TRUE}
+ddply(
+ .data = calcGDP(gapminder),
+ .variables = c("continent", "year"),
+ .fun = function(x) mean(x$gdp)
+)
+```
+
+```{r echo = TRUE, include=TRUE}
+daply(
+ .data = calcGDP(gapminder),
+ .variables = c("continent", "year"),
+ .fun = function(x) mean(x$gdp)
+)
+```
+Você pode usar essas funções em lugar de "for loops" (é usualmente mais rápido). Para substituir um "for loop", ponha o código que está no corpo do "for loop" em lugar da função anônima.
+
+```{r echo = TRUE, include=TRUE}
+d_ply(
+  .data=gapminder,
+  .variables = "continent",
+  .fun = function(x) {
+    meanGDPperCap <- mean(x$gdpPercap)
+    print(paste(
+      "A média do PIB per capita para", unique(x$continent),
+      "é", format(meanGDPperCap, big.mark=",")
+   ))
+  }
+)
+```
+
+***
+####Dica: apresentação de números                                                   
+A função `format` pode ser usada para melhorar a apresentação dos valores numéricos em mensagens
+
+***
+
+<input type=button id=toggle_d1 value="Desafio 1"></input>
+```
+Calcule a média da esperança de vida por continente. Qual tem a maior? Qual tem a menor?
+```
+<script>
+$("#toggle_d1").parent().next().hide();
+$("#toggle_d1").on( "click", function(){
+$("#toggle_d1").parent().next().toggle();
+} );
+</script>
+ 
+<input type=button id=toggle_d2 value="Desafio 2"></input>
+```
+Calcule a média da esperança de vida por continente e ano. Qual tinha a maior e a menor em 2017? Qual apresenta a maior mudança entre os anos 1952 e 2007?
+```
+<script>
+$("#toggle_d2").parent().next().hide();
+$("#toggle_d2").on( "click", function(){
+$("#toggle_d2").parent().next().toggle();
+} );
+</script>
+ 
+<input type=button id=toggle_d3 value="Desafio Avançado"></input>
+```
+Calcule a diferença das médias da esperança de vida entre os anos 1952 e 2007 usando os resultados do desafio 2 (use uma das funções de plyr).
+```
+<script>
+$("#toggle_d3").parent().next().hide();
+$("#toggle_d3").on( "click", function(){
+$("#toggle_d3").parent().next().toggle();
+} );
+</script>
+
+<input type=button id=toggle_d4 value="Desafio Alternativo se a aula parece perdida"></input>
+```
+Sem executá-lo, qual dos segintes códigos calculará a média da esperança de vida por continente:
+```
+
+1.
+
+```
+ddply(
+  .data = gapminder,
+  .variables = gapminder$continent,
+  .fun = function(dataGroup) {
+     mean(dataGroup$lifeExp)
+  }
+)
+```
+
+2.
+
+```
+ddply(
+  .data = gapminder,
+  .variables = "continent",
+  .fun = mean(dataGroup$lifeExp)
+)
+```
+
+3.
+
+```
+ddply(
+  .data = gapminder,
+  .variables = "continent",
+  .fun = function(dataGroup) {
+     mean(dataGroup$lifeExp)
+  }
+)
+```
+
+4.
+
+```
+adply(
+  .data = gapminder,
+  .variables = "continent",
+  .fun = function(dataGroup) {
+     mean(dataGroup$lifeExp)
+  }
+)
+```
+<script>
+$("#toggle_d4").parent().next().hide();
+$("#toggle_d4").parent().next().next().hide();
+$("#toggle_d4").parent().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d4").on( "click", function(){
+$("#toggle_d4").parent().next().toggle();
+$("#toggle_d4").parent().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().next().toggle();
+$("#toggle_d4").parent().next().next().next().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+
+***
+###Pontos Chave
+* Use o pacote `plyr` para dividir dados, aplicar funções aos subconjuntos e combinar os resultados.
+
+***

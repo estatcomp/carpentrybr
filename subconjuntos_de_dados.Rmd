@@ -1,0 +1,1126 @@
+---
+title: "R para Análise Científica Reprodutível"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+opts_chunk$set(cache=TRUE
+               , cache.path="cache/"
+               , fig.path="imagens/"
+               , dpi=100
+               , fig.align="center"
+               , comment=NA
+               , error=FALSE
+               , message=FALSE)
+
+options(width=120)
+
+library(gapminder)
+```
+
+# Subconjuntos (*subsets*) de dados
+
+***
+> Visão Geral:
+
+* **Ensino:** 35 min
+* **Exercícios:** 15 min
+
+* **Perguntas**
+    + Como eu posso trabalhar com subconjuntos de dados no R?
+
+* **Objetivos**
+    + Ser capaz de criar subconjuntos de vetores, fatores, matrizes, listas, e
+      bancos de dados (*data frames*)
+    + Ser capaz de extrair elementos individuais e múltiplos: por indexador, por
+      nome, e usando operações de comparação
+    + Ser capaz de pular e remover elementos de várias estruturas de dados.
+
+***
+
+O R tem vários operadores poderosos para subconjuntos e o domínio deles irá
+permitir que você facilmente utilize operações complexas em qualquer tipo de
+conjunto de dados.
+
+Existem seis diferentes maneiras de nós criarmos subconjuntos de qualquer tipo de
+objeto, e três diferentes operadores de subconjuntos para as diferentes
+estruturas de dados.
+
+Vamos começar com o carro chefe do R: vetores atômicos.
+
+```{r}
+x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+names(x) <- c('a', 'b', 'c', 'd', 'e')
+x
+```
+
+Então, agora que nós criamos um vetor *dummy* para brincar, como nós temos acesso
+ao seu conteúdo?
+
+## Acessando elementos usando seus índices
+
+Para extrair elementos de um vetor nós podemos dar seus correspondentes índices,
+começando por um:
+
+```{r}
+x[1]
+
+x[4]
+```
+
+Isso pode parecer diferente, mas o operador par de colchetes é uma função. Para
+vetores atômicos (e matrizes), isso significa "me passe o *n*-ésimo elemento".
+
+Nós podemos pedir por múltiplos elementos de uma única vez:
+
+```{r}
+x[c(1, 3)]
+```
+
+Ou fatias do vetor:
+
+```{r}
+x[1:4]
+```
+
+O operador : cria uma sequência de números do elemento da esquerda até o da
+direita.
+
+```{r}
+1:4
+
+c(1, 2, 3, 4)
+```
+
+Nós podemos pedir pelo mesmo elemento múltiplas vezes:
+
+```{r}
+x[c(1, 1, 3)]
+```
+
+Se nós pedirmos por um número fora do vetor, o R retornará valores faltantes:
+
+```{r}
+x[6]
+```
+
+Este é um vetor de comprimento um contendo um `NA`, cujo nome é também `NA`.
+
+Se nós pedirmos pelo elemento de índice 0, nós temos um vetor vazio:
+
+```{r}
+x[0]
+```
+
+***
+> <p><img src="tap.JPG" align="middle"> Numeração de vetores no R começa em 1</p>
+
+Em várias linguagens de programação (C e python, por exemplo), o primeiro 
+elemento de um vetor possuí um indexador igual a 0. Em R, o primeiro elemento é
+1.
+
+***
+
+## Pulando e removendo elementos
+
+Se nós usarmos como indexador de um vetor um número negativo, o R irá retornar
+todo elemento *exceto* o elemento específicado:
+
+```{r}
+x[-2]
+```
+
+Nós podemos pular múltiplos elementos:
+
+```{r}
+x[c(-1, -5)] # ou x[-c(1, 5)]
+```
+
+***
+> <p><img src="tap.JPG" align="middle"> Dica: Ordem de operações</p>
+
+Uma experiência em comum para os novatos ocorre quando se tenta pular pedaços de
+um vetor. A maioria das pessoas primeiro tenta negar uma sequência, como por
+exemplo:
+
+```{r, eval=FALSE}
+x[-1:3]
+```
+
+Isto retorna uma espécie de erro crítico:
+
+```{r, error=TRUE, echo=FALSE}
+x[-1:3]
+```
+
+Mas lembre da ordem das operações. : é realmente uma função, então o que acontece
+é que ele pega seu primento argumento como -1, o segundo como 3, e então gera a
+sequência de números: `c(-1, 0, 1, 2, 3)`.
+
+A solução correta é colocar o que a função chama em parênteses, assim o operador
+`-` é aplicado ao resultado:
+
+```{r}
+x[-(1:3)]
+```
+***
+
+Para remover elementos de um vetor, nós precisamos atribuir o resultado novamente
+na variável:
+
+```{r}
+x <- x[-4]
+x
+```
+
+***
+<input type=button id=toggle_d1 value="Desafio 1"></input>
+
+Dado o código a seguir:
+
+```{r}
+x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+names(x) <- c('a', 'b', 'c', 'd', 'e')
+print(x)
+```
+
+Forneça ao menos 3 diferentes comandos que produzem o seguinte resultado:
+
+```{r, echo=FALSE}
+y <- c(6.2, 7.1, 4.8) ; names(y) <- c('b', 'c', 'd') ; y
+```
+
+Depois de você encontrar 3 diferentes comandos, compare anotações com seu colega.
+Vocês tiveram diferentes estratégias?
+
+***
+<input type=button id=toggle_d2 value="Resposta do desafio 1"></input>
+
+```{r}
+x[2:4]
+
+x[-c(1, 5)]
+
+x[c("b", "c", "d")]
+
+x[c(2, 3, 4)]
+```
+
+***
+<script>
+$("#toggle_d1").parent().next().hide();
+$("#toggle_d1").parent().next().next().hide();
+$("#toggle_d1").parent().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d1").on( "click", function(){
+  $("#toggle_d1").parent().next().toggle();
+  $("#toggle_d1").parent().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().next().next().next().next().toggle();
+} );
+$("#toggle_d2").parent().next().hide();
+$("#toggle_d2").parent().next().next().hide();
+$("#toggle_d2").parent().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d2").on( "click", function(){
+  $("#toggle_d2").parent().next().toggle();
+  $("#toggle_d2").parent().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+## Subconjuntos por nome
+
+Nós podemos extrair elementos através de seu nome, invés do indexador:
+
+```{r}
+x[c("a", "c")]
+```
+
+Esta é uma maneira muito mais confiável de dividir objetos: a posição de vários
+elementos pode frequentemente mudar quando encadeamos operações de subconjuntos,
+mas os nomes sempre permanecerão os mesmos!
+
+Infelizmente não podemos pular ou remover elementos tão facilmente.
+
+Para pular (ou remover) um único elemento nomeado:
+
+```{r}
+x[-which(names(x) == "a")]
+```
+
+A função `which` retorna os índices de todos os elementos `TRUE` de seu
+argumento. Lembre que expressões são avaliadas antes de serem passadas para
+funções. Vamos mostrar passo à passo para ficar claro o que está acontecendo.
+
+Primeiro isso acontece:
+
+```{r}
+names(x) == "a"
+```
+
+O operador condicional é aplicado a todo nome do vetor `x`. Apenas o primeiro
+nome é `a` e por isso seu elemento é `TRUE`.
+
+`which` então converte isto para um indexador:
+
+```{r}
+which(names(x) == "a")
+```
+
+Apenas o primeiro elemento é `TRUE`, então `which` retorna 1. Agora que temos
+índices podemos pular um elemento, pois temos um index negativo!
+
+Pular múltiplos índices nomeados é similar, mas usa um operador de comparação
+diferente:
+
+```{r}
+x[-which(names(x) %in% c("a", "c"))]
+```
+
+O `%in%` vai em cada elemento de seu argumento à esquerda, nesse caso os nomes de
+`x`, e pergunta, "Esse elemento ocorre no segundo argumento?"
+
+***
+<input type=button id=toggle_d3 value="Desafio 2"></input>
+
+Rode o código a seguir para definir o vetor `x` como acima:
+
+```{r}
+x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+names(x) <- c('a', 'b', 'c', 'd', 'e')
+print(x)
+```
+
+Dado este vetor `X`, o que você espera que o código a seguir faça?
+
+```{r}
+x[-which(names(x) == "g")]
+```
+
+Teste este comando e veja o que você recebe. É o que você esperava? Por que nós
+recebemos este resultado? (Dica: teste cada parte do comando - esta é uma
+ferramenta útil de depuração, *debugging*)
+
+Quais das afirmações a seguir são verdadeiras:
+
+A) se não existem valores `TRUE` passados ao `witch`, um vetor vazio é retornado
+
+B) se não existem valores `TRUE` passados ao `witch`, uma mensagem de erro é
+   retornada
+
+C) `integer` é um vetor vazio
+
+D) fazendo um vetor vazio negativo é retornado um vetor "com todo mundo"
+
+E) `x[]` dá o mesmo resultado que `x[integer()]`
+
+***
+<input type=button id=toggle_d4 value="Resposta do desafio 2"></input>
+
+A e C estão corretas.
+
+O comando `which` retorna o indexador de todo valor `TRUE` em sua entrada, 
+*input*. O comando `names(x) == "g"` não retorna cada valor `TRUE`. Se não 
+existem valores `TRUE` passados ao comando `which`, é retornado um vetor vazio.
+Transformado este vetor em negativo com um sinal de menos não altera seu
+significado. Pois nós usamos este vetor vazio para recuperar valores de `x`, o
+que produz um vetor numérico vazio. Ele é um vetor `numérico nomeado` vazio
+porque o tipo do vetor `x` é "numérico nomeado" desde que nós atribuímos nomes
+aos valores (tente `str(x)`).
+
+***
+<script>
+$("#toggle_d3").parent().next().hide();
+$("#toggle_d3").parent().next().next().hide();
+$("#toggle_d3").parent().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d3").on( "click", function(){
+  $("#toggle_d3").parent().next().toggle();
+  $("#toggle_d3").parent().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+$("#toggle_d4").parent().next().hide();
+$("#toggle_d4").parent().next().next().hide();
+$("#toggle_d4").on( "click", function(){
+  $("#toggle_d4").parent().next().toggle();
+  $("#toggle_d4").parent().next().next().toggle();
+} );
+</script>
+
+> <p><img src="tap.JPG" align="middle"> Dica: Nomes não-únicos</p>
+
+Você deve estar consciente de que é possível que múltiplos elementos de um vetor
+tenham o mesmo nome. (Para um *data frame*, colunas podem ter o mesmo nome -
+embora o R tente evitar isso - mas o nome das linhas deve ser único). Considere
+estes exemplos:
+
+```{r}
+x <- 1:3
+x
+
+names(x) <- c('a', 'a', 'a')
+x
+
+x['a'] # retorna apenas o primeiro valor
+
+x[which(names(x) == 'a')] # retorna todos os três valores
+```
+
+***
+
+> <p><img src="tap.JPG" align="middle"> Dica: Tendo ajuda com operadores</p>
+
+Lembre-se que você pode procurar por ajuda para operadores colocando eles entre
+aspas: `help("%in%")` ou `?"%in%"`.
+
+***
+
+Então por que não podemos usar `==` igual antes? Essa é uma excelente pergunta.
+
+Vamos dar uma olhada no componente de comparação deste código:
+
+```{r}
+names(x) == c('a', 'c')
+```
+
+Obviamente "c" está como um dos nomes de `x`, então por que isto não funcionou?
+`==` trabalha ligeiramente diferente de `%in%`. Ele irá comparar cada elemento de
+seu argumento a esquerda com o correspondente elemento do argumento a direita.
+
+Aqui uma ilustração:
+
+```{r, eval=FALSE}
+c("a", "b", "c", "e") # nomes de x
+   |    |    |    |   # Os elementos == são comparados
+c("a", "c")
+```
+
+Quando um vetor é menor que o outro, ele é *reciclado*:
+
+```{r, eval=FALSE}
+c("a", "b", "c", "e") # nomes de x
+   |    |    |    |   # Os elementos == são comparados
+c("a", "c", "a", "c")
+```
+
+Neste caso o R simplesmente repete c("a", "c") duas vezes. Se o tamando do maior
+vetor não for múltiplo do tamanho do menor vetor, o R também irá retornar uma
+mensagem de aviso:
+
+```{r}
+names(x) == c('a', 'c', 'e')
+```
+
+Essa diferença entre `==` e `%in%` é importante de se lembrar, pois pode gerar
+*bugs* sutis e difíceis de encontrar!
+
+## Subconjuntos através de outras operações lógicas
+
+Nós podemos também criar subconjuntos mais simples atráves de operações lógicas:
+
+```{r}
+x[c(TRUE, TRUE, FALSE, FALSE)]
+```
+
+Note que neste caso, o vetor lógico é também reciclado para o tamanho do vetor
+que estamos fazendo o subconjunto!
+
+```{r}
+x[c(TRUE, FALSE)]
+```
+
+Já que operadores de comparação avaliam para vetores lógicos, nós podemos usá-los
+para sucintamente criar subconjuntos de vetores:
+
+```{r}
+x[x > 7]
+```
+
+***
+> <p><img src="tap.JPG" align="middle"> Dica: Combinando condições lógicas</p>
+
+Existem várias situações em que você vai desejar combinar múltiplos critérios
+lógicos. Por exemplo, nós podemos querer encontrar todos os países da Ásia *ou*
+da Europa *e* que possuem expectativa de vida dentro de certo intervalo. Existem
+no R várias operações para combinar vetores lógicos:
+
+* `&`, o operador lógico "E": retorna `TRUE` se tanto a esquerda quanto a direita
+                              forem `TRUE`.
+
+* `|`, o operador lógico "OU": retorna `TRUE`, se a esquerda ou direita (ou 
+                               ambas) forem `TRUE`.
+
+A regra de reciclagem se aplica em ambos, assim, `TRUE` `&`
+`c(TRUE, FALSE, TRUE)` compara o primeiro `TRUE` na esquerda do sinal `&` com 
+cada uma das três condições da direita.
+
+As vezes você pode ver `&&` e `||` invés de `&` e `|`. Estes operadores não usam
+a regra de reciclagem: eles olham apenas para o primeiro elemento de cada vetor
+e ignoram os demais elementos. Operadores longos são usados principalmente em
+programação, invés de análise de dados.
+
+* `!`, o operador lógico "NÃO": converte `TRUE` em `FALSE` e `FALSE` em `TRUE`.
+  Ele pode negar uma única condição lógica (por exemplo, `!TRUE` se torna
+  `FALSE`), ou um vetor inteiro de condições (por exemplo, `!c(TRUE, FALSE)` se
+  torna `c(FALSE, TRUE`).
+
+Adicionalmente, você pode comparar os elementos dentro de um único vetor usando a
+função `all` (que retorna `TRUE` se todos os elementos do vetor forem `TRUE`) e
+a função `any` (que retorna `TRUE` se um ou mais elementos do vetor for `TRUE`).
+
+***
+
+<input type=button id=toggle_d5 value="Desafio 3"></input>
+
+Dado o código a seguir:
+
+```{r}
+x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+names(x) <- c('a', 'b', 'c', 'd', 'e')
+print(x)
+```
+
+Escreva um comando que retorne os valores em `x` que são maiores que 4 e menores
+que 7.
+
+***
+<input type=button id=toggle_d6 value="Resposta do desafio 3"></input>
+
+```{r}
+x_subset <- x[x<7 & x>4]
+print(x_subset)
+```
+
+***
+<script>
+$("#toggle_d5").parent().next().hide();
+$("#toggle_d5").parent().next().next().hide();
+$("#toggle_d5").parent().next().next().next().hide();
+$("#toggle_d5").parent().next().next().next().next().hide();
+$("#toggle_d5").parent().next().next().next().next().next().hide();
+$("#toggle_d5").parent().next().next().next().next().next().next().hide();
+$("#toggle_d5").on( "click", function(){
+  $("#toggle_d5").parent().next().toggle();
+  $("#toggle_d5").parent().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().next().next().next().toggle();
+} );
+$("#toggle_d6").parent().next().hide();
+$("#toggle_d6").parent().next().next().hide();
+$("#toggle_d6").on( "click", function(){
+  $("#toggle_d6").parent().next().toggle();
+  $("#toggle_d6").parent().next().next().toggle();
+} );
+</script>
+
+## Lidando com valores especiais
+
+Em algum dado momento você irá encontrar funções em R que não sabem lidar com
+dados faltantes, infinito, ou indefinidos.
+
+Existem funções especiais que você pode usar para filtrar estes dados:
+
+* `is.na` irá retornar todas as posições do vetor, matriz, ou *data frame* que
+  contém `NA`.
+
+* Da mesma maneira, `is.nan` e `is.infinite` fará o mesmo para `NaN` e `Inf`.
+
+* `is.finite` irá retornar todas as posições do vetor, matriz, ou *data frame*
+  que não contém `NA`, `NaN` ou `Inf`.
+
+* `na.omit` irá filtrar todos os valores faltantes de um vetor
+
+## Subconjuntos de fatores
+
+Agora que já exploramos as diferentes maneiras de fazer subconjuntos de vetores,
+como nós fazemos subconjuntos de outras estruturas de dados?
+
+Subconjuntos de fatores funciona da mesma maneira que os subconjuntos de vetores.
+
+```{r}
+f <- factor(c("a", "a", "b", "c", "c", "d"))
+f[f == "a"]
+
+f[f %in% c("b", "c")]
+
+f[1:3]
+```
+
+Uma importante nota é que pular elementos não irá remover o nível (*level*),
+mesmo que não existam mais elementos dessa categoria no fator:
+
+```{r}
+f[-3]
+```
+
+## Subconjuntos de matrizes
+
+Subconjuntos de matrizes são criados usando a função `[`. Neste caso é usado dois
+argumentos: o primeiro aplicado às linhas, o segundo às colunas:
+
+```{r}
+set.seed(1)
+m <- matrix(rnorm(6*4), ncol=4, nrow=6)
+m[3:4, c(3,1)]
+```
+
+Você pode deixar o primeiro ou segundo argumento em branco para recuperar todas
+as linhas ou colunas respectivamente:
+
+```{r}
+m[, c(3,4)]
+```
+
+Se nós acessarmos apenas uma linha ou coluna, o R irá automaticamente converter
+o resultado para um vetor:
+
+```{r}
+m[3, ]
+```
+
+Se você quiser manter a saída como uma matriz, você precisa especificar um 
+*terceiro* argumento, `drop = FALSE`:
+
+```{r}
+m[3, , drop = FALSE]
+```
+
+Ao contrário de vetores, se nós tentarmos acessar uma linha ou coluna fora da
+matriz, o R irá retornar um erro:
+
+```{r, error=TRUE}
+m[, c(3, 6)]
+```
+
+***
+> <p><img src="tap.JPG" align="middle"> Dica: Matrizes de maiores dimensão</p>
+
+ao se trabalhar com matrizes de maiores dimensão, cada argumento para `[`
+corresponde a uma dimensão. Por exemplo, numa matriz 3D, os primeiros três
+argumentos correspondem as linhas, colunas, e nível da dimensão.
+
+***
+
+Por matrizes serem vetores, nós podemos também criar subconjuntos usando apenas
+um argumento:
+
+```{r}
+m[5]
+```
+
+Isto usualmente não é útil, e frequentemente confundem na hora de ler. Contudo,
+é útil para notar que matrizes são estabelecidas por padrão (*default*) no
+formato colunas primeiro, *column-major*. Isso significa que os vetores são
+arrumados pelas colunas:
+
+```{r}
+matrix(1:6, nrow=2, ncol=3)
+```
+
+Se você deseja preencher a matriz pelas linhas, use `byrow=TRUE`:
+
+```{r}
+matrix(1:6, nrow=2, ncol=3, byrow=TRUE)
+```
+
+Subconjuntos de matrizes também podem ser criados pelos nomes das linhas e 
+colunas, invés do índice das linhas e colunas.
+
+***
+<input type=button id=toggle_d7 value="Desafio 4"></input>
+
+Dado o seguinte código:
+
+```{r}
+m <- matrix(1:18, nrow=3, ncol=6)
+print(m)
+```
+
+Qual dos seguintes comandos irá extrair os valores 11 e 14?
+
+A. `m[2,4,2,5]`
+
+B. `m[2:5]`
+
+C. `m[4:5,2]`
+
+D. `m[2, c(4,5)]`
+
+***
+
+<input type=button id=toggle_d8 value="Resposta do desafio 4"></input>
+
+D
+
+***
+<script>
+$("#toggle_d7").parent().next().hide();
+$("#toggle_d7").parent().next().next().hide();
+$("#toggle_d7").parent().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d7").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d7").on( "click", function(){
+  $("#toggle_d7").parent().next().toggle();
+  $("#toggle_d7").parent().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d7").parent().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+$("#toggle_d8").parent().next().hide();
+$("#toggle_d8").on( "click", function(){
+  $("#toggle_d8").parent().next().toggle();
+} );
+</script>
+
+## Subconjuntos de listas
+
+Agora nós vamos introduzir alguns novos operadores para subconjuntos. Existem
+três funções usadas para fazer subconjuntos de listas. `[`, como vimos para
+vetores atômicos e matrizes, assim como `[[` e `$`.
+
+Usando `[` sempre será retornada uma lista. Se você quiser um *subconjunto* de
+uma lista, mas não *extrair* um elemento, então você provavelmente irá usar `[`.
+
+```{r}
+xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
+xlist[1]
+```
+
+Isto retorna uma *lista com um elemento*.
+
+Nós podemos selecionar elementos de uma lista exatamente da mesma maneira usada
+com vetores atômicos, isto é, `[`. Operadores de comparação entretanto não
+funcionam por não serem recursivos, eles irão testar uma condição na estrutura de
+dados em cada elemento da lista, não no elemento indivual dentro dessa estrutura
+de dados.
+
+```{r}
+xlist[1:2]
+```
+
+Para extrair elementos individuais de uma lista, você precisa usar a função dois
+pares de colchetes: `[[`.
+
+```{r}
+xlist[[1]]
+```
+
+Repare que agora o resultado é um vetor, não uma lista.
+
+Você não pode extrair mais de elemento de uma vez:
+
+```{r, error=TRUE}
+xlist[[1:2]]
+```
+
+Nem usar isso para pular elementos:
+
+```{r, error=TRUE}
+xlist[[-1]]
+```
+
+Mas você pode usar nomes tanto para fazer subconjuntos quanto para extrair
+elementos:
+
+```{r}
+xlist[["a"]]
+```
+
+A função `$` é uma maneira abreviada de extrair elementos pelo nome:
+
+```{r}
+xlist$data
+```
+
+***
+
+<input type=button id=toggle_d9 value="Desafio 5"></input>
+
+Dada a seguinte lista:
+
+```{r}
+xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
+```
+
+Usando seus conhecimentos de subconjuntos de listas e vetores, extraia o número 2
+de xlist. Dica: o número 2 está contido dentro do item "b" da lista.
+
+***
+
+<input type=button id=toggle_d10 value="Resposta do desafio 5"></input>
+
+```{r}
+xlist$b[2]
+
+xlist[[2]][2]
+
+xlist[["b"]][2]
+```
+
+***
+<script>
+$("#toggle_d9").parent().next().hide();
+$("#toggle_d9").parent().next().next().hide();
+$("#toggle_d9").parent().next().next().next().hide();
+$("#toggle_d9").parent().next().next().next().next().hide();
+$("#toggle_d9").parent().next().next().next().next().next().hide();
+$("#toggle_d9").on( "click", function(){
+  $("#toggle_d9").parent().next().toggle();
+  $("#toggle_d9").parent().next().next().toggle();
+  $("#toggle_d9").parent().next().next().next().toggle();
+  $("#toggle_d9").parent().next().next().next().next().toggle();
+  $("#toggle_d9").parent().next().next().next().next().next().toggle();
+} );
+$("#toggle_d10").parent().next().hide();
+$("#toggle_d10").parent().next().next().hide();
+$("#toggle_d10").parent().next().next().next().hide();
+$("#toggle_d10").parent().next().next().next().next().hide();
+$("#toggle_d10").parent().next().next().next().next().next().hide();
+$("#toggle_d10").parent().next().next().next().next().next().next().hide();
+$("#toggle_d10").on( "click", function(){
+  $("#toggle_d10").parent().next().toggle();
+  $("#toggle_d10").parent().next().next().toggle();
+  $("#toggle_d10").parent().next().next().next().toggle();
+  $("#toggle_d10").parent().next().next().next().next().toggle();
+  $("#toggle_d10").parent().next().next().next().next().next().toggle();
+  $("#toggle_d10").parent().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+***
+
+<input type=button id=toggle_d11 value="Desafio 6"></input>
+
+Dado um modelo linear:
+
+```{r}
+mod <- aov(pop ~ lifeExp, data=gapminder)
+```
+
+Extraia os graus de liberdade residuais (dica: `attributes()` irá ajudar você)
+
+***
+
+<input type=button id=toggle_d12 value="Resposta do desafio 6"></input>
+
+```{r, eval=FALSE}
+attributes(mod) ## `df.residual` é um dos nomes de  `mod`
+```
+
+```{r, eval=FALSE}
+mod$df.residual
+```
+
+***
+<script>
+$("#toggle_d11").parent().next().hide();
+$("#toggle_d11").parent().next().next().hide();
+$("#toggle_d11").parent().next().next().next().hide();
+$("#toggle_d11").parent().next().next().next().next().hide();
+$("#toggle_d11").parent().next().next().next().next().next().hide();
+$("#toggle_d11").on( "click", function(){
+  $("#toggle_d11").parent().next().toggle();
+  $("#toggle_d11").parent().next().next().toggle();
+  $("#toggle_d11").parent().next().next().next().toggle();
+  $("#toggle_d11").parent().next().next().next().next().toggle();
+  $("#toggle_d11").parent().next().next().next().next().next().toggle();
+} );
+$("#toggle_d12").parent().next().hide();
+$("#toggle_d12").parent().next().next().hide();
+$("#toggle_d12").on( "click", function(){
+  $("#toggle_d12").parent().next().toggle();
+  $("#toggle_d12").parent().next().next().toggle();
+} );
+</script>
+
+## *Data frames*
+
+Lembre-se que *data frames* são listas disfarçadas, então regras similares se
+aplicam. Contudo, eles também são objetos de duas dimensões:
+
+`[` com um argumento irá agir da mesma forma que em listas, em que cada elemento
+da lista corresponde a uma coluna. O objeto resultante será um *data frame*:
+
+```{r}
+head(gapminder[3])
+```
+
+Similarmente, `[[` irá agir para extrair uma *única coluna*:
+
+```{r}
+head(gapminder[["lifeExp"]])
+```
+
+E `$` fornece um caminho mais curto e conveniente para extrair colunas pelo nome:
+
+```{r}
+head(gapminder$year)
+```
+
+Com dois argumentos, `[` se comporta da mesma maneira que em matrizes:
+
+```{r}
+gapminder[1:3,]
+```
+
+Se nós selecionarmos uma única linha, o resultado será um *data frame* (pois os
+elementos são de tipos variados):
+
+```{r}
+gapminder[3,]
+```
+
+Mas para uma única coluna o resultado será um vetor (isso pode ser alterado com o
+terceiro argumento, `drop = FALSE`).
+
+***
+
+<input type=button id=toggle_d13 value="Desafio 7"></input>
+
+Conserte cada um dos seguintes subconjuntos de *data frames* com erros:
+
+1. Extraia observações coletadas no ano de 1957
+
+```{r, eval=FALSE}
+gapminder[gapminder$year = 1957,]
+```
+
+2. Extraia todas as colunas exceto 1 até 4
+
+```{r, eval=FALSE}
+gapminder[,-1:4]
+```
+
+3. Extraia as linhas em que a expectativa de vida é maior que 80 anos
+
+```{r, eval=FALSE}
+gapminder[gapminder$lifeExp > 80]
+```
+
+4. Extraia a primeira linha, e a quarta e quinta coluna (`lifeExp` e `gdpPercap`)
+
+```{r, eval=FALSE}
+gapminder[1, 4, 5]
+```
+
+5. Avançado: extraia as linhas que contêm informações sobre os anos 2002 e 2007
+
+```{r, eval=FALSE}
+gapminder[gapminder$year == 2002 | 2007,]
+```
+
+***
+
+<input type=button id=toggle_d14 value="Resposta do desafio 7"></input>
+
+Conserte cada um dos seguintes subconjuntos de *data frames* com erros:
+
+1. Extraia observações coletadas no ano de 1957
+
+```{r, eval=FALSE}
+# gapminder[gapminder$year = 1957,]
+gapminder[gapminder$year == 1957,]
+```
+
+2. Extraia todas as colunas exceto 1 até 4
+
+```{r, eval=FALSE}
+# gapminder[,-1:4]
+gapminder[,-c(1:4)]
+```
+
+3. Extraia as linhas em que a expectativa de vida é maior que 80 anos
+
+```{r, eval=FALSE}
+# gapminder[gapminder$lifeExp > 80]
+gapminder[gapminder$lifeExp > 80,]
+```
+
+4. Extraia a primeira linha, e a quarta e quinta coluna (`lifeExp` e `gdpPercap`)
+
+```{r, eval=FALSE}
+# gapminder[1, 4, 5]
+gapminder[1, c(4, 5)]
+```
+
+5. Avançado: extraia as linhas que contêm informações sobre os anos 2002 e 2007
+
+```{r, eval=FALSE}
+# gapminder[gapminder$year == 2002 | 2007,]
+gapminder[gapminder$year == 2002 | gapminder$year == 2007,]
+gapminder[gapminder$year %in% c(2002, 2007),]
+```
+
+***
+<script>
+$("#toggle_d13").parent().next().hide();
+$("#toggle_d13").parent().next().next().hide();
+$("#toggle_d13").parent().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d13").on( "click", function(){
+  $("#toggle_d13").parent().next().toggle();
+  $("#toggle_d13").parent().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d13").parent().next().next().next().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+$("#toggle_d14").parent().next().hide();
+$("#toggle_d14").parent().next().next().hide();
+$("#toggle_d14").parent().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().next().next().hide();
+$("#toggle_d14").on( "click", function(){
+  $("#toggle_d14").parent().next().toggle();
+  $("#toggle_d14").parent().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().next().toggle();
+  $("#toggle_d14").parent().next().next().next().next().next().next().next().next().next().next().next().toggle();
+} );
+</script>
+
+***
+
+<input type=button id=toggle_d15 value="Desafio 8"></input>
+
+1. Por que `gapminder[1:20]` retorna um erro? Como isso difere de
+   `gapminder[1:20, ]`?
+
+2. Crie um novo `data.frame` chamado `gapminder_small` que contenha apenas as
+   linhas 1 até 9 e 19 até 23. Você pode fazer isso em um ou dois passos.
+
+***
+
+<input type=button id=toggle_d16 value="Resposta do desafio 8"></input>
+
+1. `gapminder` é um `data.frame`, então ele precisa de duas dimensões para ter
+   um subconjunto. `gapminder[1:20, ]` diz para selecionar as primeiras 20 linhas
+   e todas as colunas.
+
+2. `gapminder_small <- gapminder[c(1:9, 19:23),]`
+
+***
+
+<script>
+$("#toggle_d15").parent().next().hide();
+$("#toggle_d15").parent().next().next().hide();
+$("#toggle_d15").parent().next().next().next().hide();
+$("#toggle_d15").parent().next().next().next().next().hide();
+$("#toggle_d15").on( "click", function(){
+  $("#toggle_d15").parent().next().toggle();
+  $("#toggle_d15").parent().next().next().toggle();
+  $("#toggle_d15").parent().next().next().next().toggle();
+  $("#toggle_d15").parent().next().next().next().next().toggle();
+} );
+$("#toggle_d16").parent().next().hide();
+$("#toggle_d16").parent().next().next().hide();
+$("#toggle_d16").on( "click", function(){
+  $("#toggle_d16").parent().next().toggle();
+  $("#toggle_d16").parent().next().next().toggle();
+} );
+</script>
+
+***
+
+***
+> Pontos chave:
+
+* Indexadores no R começam em 1, não em 0.
+
+* Acesso de valores individuais pela posição usando `[]`.
+
+* Acessando fatias do dado usando `[menor:maior]`.
+
+* Acessando conjuntos arbitrários do dado usando `[c(...)]`.
+
+* Use `which` para selecionar subconjuntos do dado baseado num valor.
+
+***

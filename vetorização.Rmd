@@ -1,0 +1,559 @@
+---
+title: 'Vetorização'
+output:
+  html_document:
+    header-includes: \usepackage{color}
+                      \usepackage{bbm}
+    toc: no
+    toc_float: yes
+      
+ 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+***
+
+##Visão Geral
+
+***
+
+
+###Aprendizado: 
+ 
+10 min
+
+###Exercícios:
+
+15 min
+
+
+###Questões: 
+
+Como eu posso operar todos elementos de um vetor de uma só vez?
+
+
+###Objetivos: 
+
+Compreender operações com vetores no R
+
+
+***
+
+
+
+
+A maior parte das funções no R são vetorizadas, o que significa que a função vai operar todos elementos de um vetor de uma só vez, sem que seja necessario operar cada elemento do vetor de forma individual. Isto faz com que o código seja mais consiso, fácil de ler e menos sujeito ao erro.
+
+
+
+```(r)
+
+
+x <-1:4
+x*2
+
+[1] 2 4 6 8
+
+```
+
+A multiplicação foi feita em cada elemento do vetor.
+
+Nós tambem podemos somar dois vetores.
+
+```(r)
+
+y <- 6:9
+
+x+y
+
+[1] 7 9 11 13
+
+```
+
+Cada elemento de *x* foi somado ao elemento correspondente em *y*.
+
+```(r)
+
+x: 1 2 3 4
+   + + + +  
+y: 6 7 8 9
+
+=  7 9 11 13
+
+```
+
+***
+
+
+####<span style ="color:#819FF7">Desafio 1</span>
+
+
+Vamos tentar o seguinte desafio na coluna *pop* do conjunto de dados *gapminder*.
+
+Faça uma nova coluna no cojunto de dados *gapminder* que contenha a populacao em milhões de indivíduos.
+
+**OBS**:Cheque o início e o fim do conjunto de dados para ter certeza de que funcionou.
+
+
+####<span style ="color:#819FF7">Solução do Desafio 1</span>
+
+
+
+```(r)
+
+gapminder$pop_millions <- gapminder$pop / 1e6
+
+head(gapminder)
+
+
+ country year      pop continent lifeExp gdpPercap pop_millions
+1 Afghanistan 1952  8425333      Asia  28.801  779.4453     8.425333
+2 Afghanistan 1957  9240934      Asia  30.332  820.8530     9.240934
+3 Afghanistan 1962 10267083      Asia  31.997  853.1007    10.267083
+4 Afghanistan 1967 11537966      Asia  34.020  836.1971    11.537966
+5 Afghanistan 1972 13079460      Asia  36.088  739.9811    13.079460
+6 Afghanistan 1977 14880372      Asia  38.438  786.1134    14.880372
+
+
+
+
+```
+
+
+***
+
+
+####<span style ="color:#819FF7">Desafio 2</span>
+
+
+
+Em um unico gráfico, plotar a população, em milhares, contra anos, para todos os paises.
+
+Não se preocupe em identificar cada país.
+
+Repita esta exercício somente para a China, India e Indonesia. Novamente, não se preocupe em identificar cada país.
+
+
+####<span style ="color:#819FF7">Solução do Desafio 2</span>
+
+
+
+Relembre suas técnicas plotando a população, em milhões, contra anos.
+
+
+
+```(r)
+
+1. Antes de mais nada, adicione o pacote de dado:
+
+gapminder <- read.csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv")
+
+2. Instale o pacote necessário à realização de gráficos:
+
+install.packages(ggplot)
+
+3. Adicione a função ao seu projeto:
+
+library(ggplot2)
+
+4. Faça o gráfico:
+
+ggplot(gapminder, aes(x = year, y = pop_millions)) +
+ geom_point()
+
+
+```
+
+
+
+
+
+
+```(r)
+countryset <- c("China","India","Indonesia")
+ggplot(gapminder[gapminder$country %in% countryset,],
+       aes(x = year, y = pop_millions)) +
+  geom_point()
+
+```
+
+
+
+
+
+![](C:\R_2\rplot2.jpeg)
+
+
+
+
+***
+
+Operadores de comparação, operadores lógicos e muitas outras funções também são vetorizadas:
+
+
+**Vetores de Comparação**
+
+```(r)
+x>2
+```
+
+
+```
+[1] FALSE FALSE  TRUE  TRUE
+```
+
+
+**Operadores lógicos**
+
+```(r)
+a <- x > 3  # or, for clarity, a <- (x > 3)
+a
+```
+
+
+```(r)
+[1] FALSE FALSE FALSE  TRUE
+
+```
+
+***
+
+
+####<span style ="color:#DF3A01"> Dica: Algumas funções úteis para operadores lógicos</span>
+
+
+_any()_ vai retornar _TRUE_ se qualquer elemento de um vetor for _TRUE_. _all()_ vai retornar _TRUE_ se todos elementos do vetor forem _TRUE_.
+
+
+***
+
+A maior parte das funções também operam com elementos individuais de um vetor:
+
+
+**Funções**
+
+```(r)
+
+x <- 1:4
+
+log(x)
+
+```
+
+
+
+```(r)
+
+[1] 0.0000000 0.6931472 1.0986123 1.3862944
+
+```
+
+
+
+Operações vetorizadas também funcionam com elementos individuais em matrizes:
+
+
+
+```(r)
+
+m <- matrix(1:12, nrow=3, ncol=4)
+m * -1
+
+```
+
+
+
+
+```(r)
+
+     [,1] [,2] [,3] [,4]
+[1,]   -1   -4   -7  -10
+[2,]   -2   -5   -8  -11
+[3,]   -3   -6   -9  -12
+
+```
+
+
+####<span style ="color:#DF3A01">Dica: multiplicação com elementos individuais x multiplicação matricial </span>
+
+
+**Muito importante**: o operador " * " 
+realiza a multiplicação com elementos individuais. Para uma multiplicação matricial, nós temos que usar o operador "%*%".
+
+Exemplo:
+
+```(r)
+
+m %*% matrix(1, nrow=4, ncol=1)
+
+```
+
+
+
+```(r)
+
+     [,1]
+[1,]   22
+[2,]   26
+[3,]   30
+
+```   
+
+
+
+```(r)
+matrix(1:4, nrow=1) %*% matrix(1:4, ncol=1)
+```
+
+
+```(r)
+     [,1]
+[1,]   30
+
+```
+
+***
+
+####<span style ="color:#819FF7"> Desafio 3 </span>
+
+Dada a seguinte matriz:
+
+```(r)
+m <- matrix(1:12, nrow=3, ncol=4)
+m
+```
+
+
+```(r)
+
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12
+
+
+```
+
+Escreva o que você acha que vai acontecer se você rodar:
+
+```(r)
+m ^ -1
+m * c(1, 0, -1)
+m > c(0, 20)
+m * c(1, 0, -1, 2)
+````
+
+Você obteve os resultados esperados ? Se não, consulte o painel de ajuda.
+
+
+####<span style ="color:#819FF7"> Solução do Desafio 3 </span>
+
+Dada a seguinte matriz:
+
+```(r)
+
+m <- matrix(1:12, nrow=3, ncol=4)
+m
+
+```
+
+
+```(r)
+
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12
+
+```
+
+
+Escreva o que você acha que vai acontecer se você insetir os seguintes comandos:
+
+
+```(r)
+
+1. m ^ -1
+
+```
+
+
+
+
+```(r)
+     [,1]      [,2]      [,3]       [,4]
+[1,] 1.0000000 0.2500000 0.1428571 0.10000000
+[2,] 0.5000000 0.2000000 0.1250000 0.09090909
+[3,] 0.3333333 0.1666667 0.1111111 0.08333333
+
+```
+
+
+
+
+
+```(r)
+
+2. m * c(1, 0, -1)
+
+```
+
+
+
+```(r)
+      [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    0    0    0    0
+[3,]   -3   -6   -9  -12
+
+```
+
+
+
+```(r)
+
+3. m > c(0, 20)
+
+```
+
+
+
+```(r)
+
+      [,1]  [,2]  [,3]  [,4]
+[1,]  TRUE FALSE  TRUE FALSE
+[2,] FALSE  TRUE FALSE  TRUE
+[3,]  TRUE FALSE  TRUE FALSE
+
+```
+
+
+
+```(r)
+
+4. m > c(0, 20)
+
+```
+
+
+
+
+
+```(r)
+
+      [,1]  [,2]  [,3]  [,4]
+[1,]  TRUE FALSE  TRUE FALSE
+[2,] FALSE  TRUE FALSE  TRUE
+[3,]  TRUE FALSE  TRUE FALSE
+
+```
+
+
+
+####<span style ="color:#819FF7"> Desafio 4 </span>
+
+
+Nós estamos interessados em saber a soma da seguinte sequência de frações:
+
+
+
+```(r)
+ x = 1/(1^2) + 1/(2^2) + 1/(3^2) + ... + 1/(n^2)
+
+```
+
+
+Isto seria tedioso demais e impossivel de se escrever para valor muito altos para n. Use a vetorização para calcular x, quando n=100. Qual é a soma quando n=10.000 ?
+
+
+
+```(r)
+sum(1/(1:100)^2)
+
+```
+
+
+```(r)
+[1] 1.634984
+
+```
+
+```(r)
+
+sum(1/(1:1e04)^2)
+
+```
+
+
+```(r)
+[1] 1.644834
+```
+
+```(r)
+n <- 10000
+sum(1/(1:n)^2)
+
+```
+
+```(r)
+[1] 1.644834
+```
+
+
+Nós também podemos boter os mesmos resultados usando uma função
+
+
+```(r)
+inverse_sum_of_squares <- function(n) {
+  sum(1/(1:n)^2)
+}
+inverse_sum_of_squares(100)
+
+```
+
+
+```(r)
+[1] 1.634984
+```
+
+
+
+```(r)
+inverse_sum_of_squares(10000)
+
+```
+
+
+```
+[1] 1.644834
+```
+
+
+```(r)
+n <- 10000
+inverse_sum_of_squares(n)
+
+```
+
+
+```(r)
+[1] 1.644834
+
+
+```
+
+
+
+###Pontos chave: 
+
+Usar operações com vetores ao invés de *loops*
+
+
+
+
+

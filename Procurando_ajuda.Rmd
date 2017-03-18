@@ -1,0 +1,435 @@
+---
+title: "Atividade_1_Rodney"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Salvando os dados na pasta data
+
+Agora que nós temos uma boa estrutura para o diretório iremos colocar/salvar os dados na pasta  _data/_.
+
+***
+<input type=button id=toggle_d1 value="Desafio 1"></input>
+
+Faça download dos dados gapminder [aqui](https://raw.githubusercontent.com/resbaz/r-novice-gapminder-files/master/data/gapminder-FiveYearData.csv).
+
+1. Baixe o arquivo (CTRL + S, clique no botão direito do mouse -> “Salvar como”, ou Arquivo -> “Salvar página como”)
+2. Tenha certeza que está salvo com o nome _gapminder-FiveYearData.csv_
+3. Salve o arquivo na pasta _data/_ dentro do seu projeto.
+
+Iremos carregar e inspecionar esses dados mais tarde.
+
+***
+<script>
+$("#toggle_d1").parent().next().hide();
+$("#toggle_d1").parent().next().next().hide();
+$("#toggle_d1").parent().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().hide();
+$("#toggle_d1").parent().next().next().next().next().next().hide();
+;
+$("#toggle_d1").on( "click", function(){
+  $("#toggle_d1").parent().next().toggle();
+  $("#toggle_d1").parent().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().toggle();
+  $("#toggle_d1").parent().next().next().next().next().next().toggle();
+} );
+</script>
+
+
+***
+<input type=button id=toggle_d2 value="Desafio 2"></input>
+
+É útil ter alguma ideia geral sobre o banco de dados, diretamente pela linha de comando, antes de carregá-los no R. Entendendo o banco de dados bem será útil quando formos fazer decisões sobre como carregá-lo no R. Use a linha de comando shell para responder as seguintes questões:
+
+1. Qual é o tamanho do arquivo?
+2. Quantas linhas de dados ele contém?
+3. Quais são os tipos de dados dos valores armazenados neste arquivo?
+
+***
+<input type=button id=toggle_d3 value="Resposta do desafio 2"></input>
+
+Rodando o seguinte comando no shell:
+```
+ls -lh data/gapminder-FiveYearData.csv
+```
+O tamanho do arquivo é 80K.
+```
+wc -l data/gapminder-FiveYearData.csv
+```
+Existem 1705 linhas que são parecidas como em:
+```
+head data/gapminder-FiveYearData.csv
+```
+***
+<script>
+$("#toggle_d2").parent().next().hide();
+$("#toggle_d2").parent().next().next().hide();
+$("#toggle_d2").parent().next().next().next().hide();
+$("#toggle_d2").parent().next().next().next().next().hide();
+;
+$("#toggle_d2").on( "click", function(){
+  $("#toggle_d2").parent().next().toggle();
+  $("#toggle_d2").parent().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().toggle();
+  $("#toggle_d2").parent().next().next().next().next().toggle();
+} );
+$("#toggle_d3").parent().next().hide();
+$("#toggle_d3").parent().next().next().hide();
+$("#toggle_d3").parent().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().hide();
+$("#toggle_d3").parent().next().next().next().next().next().next().hide();
+;
+$("#toggle_d3").on( "click", function(){
+  $("#toggle_d3").parent().next().toggle();
+  $("#toggle_d3").parent().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().toggle();
+  $("#toggle_d3").parent().next().next().next().next().next().next().toggle();
+} );
+</script>
+***
+
+
+#### Dica: linha de comando no R Studio
+
+Você pode rapidamente abrir um shell em RStudio usando o item Ferramentas -> Shell…  do menu.
+
+### Controle de versão
+
+Nós também podemos integrar nosso projeto com git, o colocando sob controle de versão. RStudio possui uma interface para o git melhor que a do shell, mas é bastante limitada no que ela pode fazer, logo você ocasionalmente se encontrará precisando usar o shell. Vamos continuar e fazer um primeiro commit dos nossos templates.
+
+O painel workspace/history tem um botão para “Git”. Podemos selecionar cada arquivo marcando nas caixas: você verá um "A" verde próximo dos arquivos e pastas, e pontos de interrogações amarelos próximos dos arquivos ou pastas que o git ainda não conhece. RStudio também mostra para você a diferença entre arquivos de diferentes commits.
+
+#### Dica: Versão para saída descartável
+
+Geralmente você não deseja criar uma versão para saída descartável (ou dados para somente leitura). Você deve modificar o arquivo _.gitignore_ para dizer ao git para ignorar esses arquivos e pastas.
+
+***
+<input type=button id=toggle_d4 value="Desafio 3"></input>
+
+1. Crie uma pasta dentro do seu projeto com o nome _graphs_.
+2. Modifique o aquivo _.gitignore_ para conter _graphs/_ de forma que essa saída descartável não seja versionada.
+
+Adicione as novas pastas criadas para o controle de versão usando a interface git.
+
+***
+<input type=button id=toggle_d5 value="Resposta do desafio 3"></input>
+
+Isso pode ser feito com as linhas de comando
+```
+$ mkdir graphs
+$ echo "graphs/" >> .gitignore
+```
+
+***
+<script>
+$("#toggle_d4").parent().next().hide();
+$("#toggle_d4").parent().next().next().hide();
+$("#toggle_d4").parent().next().next().next().hide();
+$("#toggle_d4").parent().next().next().next().next().hide();
+;
+$("#toggle_d4").on( "click", function(){
+  $("#toggle_d4").parent().next().toggle();
+  $("#toggle_d4").parent().next().next().toggle();
+  $("#toggle_d4").parent().next().next().next().toggle();
+  $("#toggle_d4").parent().next().next().next().next().toggle();
+} );
+$("#toggle_d5").parent().next().hide();
+$("#toggle_d5").parent().next().next().hide();
+$("#toggle_d5").parent().next().next().next().hide();
+$("#toggle_d5").parent().next().next().next().next().hide();
+;
+$("#toggle_d5").on( "click", function(){
+  $("#toggle_d5").parent().next().toggle();
+  $("#toggle_d5").parent().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().toggle();
+  $("#toggle_d5").parent().next().next().next().next().toggle();
+} );
+</script>
+***
+
+
+### Pontos chave
+
+* Use RStudio para cirar e administrar projetos com layout consistente.
+* Trate dados não tratados como somente para leitura.
+* Trate a saída gerada como descartável.
+* Separe funções definidas e aplicações.
+* Use controle de versão.
+
+
+----------
+   AULA 3
+=======
+
+# Procurado ajuda
+
+***
+> Visão Geral
+
+**Aula**: 10 min 
+**Exercícios**: 10 min 
+
+
+**Questões**
+
+* Como posso conseguir ajuda no R?
+
+**Objetivos**
+
+* Ser capaz de ler arquivos de ajuda do R para funções e caracteres especiais.
+* Ser capaz de usar a lista de tópicos do CRAN para identificar pacotes que possam resolver um problema.
+* Ser capaz de procurar ajuda de colegas.
+
+## Lendo arquivos de ajuda
+R, e todo pacote, fornece arquivos de ajuda para funções. Para procurar ajuda sobre uma função de uma função específica que está em um pacote carregado no seu namespace (sua seção interativa do R):
+
+```
+?function_name
+help(function_name)
+```
+Isso irá carregar uma página de ajuda no RStudio (ou um texto no próprio R).
+
+Cada página de ajuda é dividida nas seções:
+
+* Description: Uma descrição estendida sobre o que a função faz.
+* Usage: Os argumentos da função e seus valores padrões.
+* Arguments: Uma explicação dos dados que cada argumento espera receber.
+* Details: Qualquer detalhe importante para estar atento.
+* Values: Os dados que a função retorna.
+* See Also: Qualquer função relacionada você pode achar útil.
+* Examples: Alguns exemplos sobre como usar a função.
+* Diferentes funções podem ter diferentes seções, mas essas são as principais para se prestar atenção.
+
+#### Dica: Lendo arquivos de ajuda
+
+Um dos aspectos mais assustadores do R é seu imenso número de funções disponíveis. Seria improvável, se não impossível, lembrar corretamente como utilizar cada função você utiliza. Felizmente, os arquivos de ajuda existem para que você não precise fazer isso!
+
+## Operadores Especiais
+Para procurar ajuda sobre operadores especiais, use os termos:
+
+```
+?"+"
+```
+
+## Conseguindo ajuda sobre pacotes
+
+Muitos pacotes vem com “vignettes”: tutoriais e exemplos de documentações estendidos. Sem qualquer argumento, _vignette()_ listará todas vignettes para todos pacotes instalados; _vignette(package="nome-pacote")_ listará todas as vignettes disponíveis para nome-pacote, e _vignette("nome-vignette")_ abrirá a vignette especificada.
+
+Se um pacote não possui vignettes alguma, você geralmente pode achar ajuda digitando help("nome-pacote").
+
+## Quando você meio que lembra a função
+Se você não tem certeza em qual pacote uma certa função está, ou como ela é especificamente escrita você pode fazer uma busca fuzzy:
+
+```
+??function_name
+```
+
+## Quando você não tem ideia por onde começar
+Se você não sabe qual pacote ou função você precisa, a lista de tópicos do CRAN ([CRAN Task Views](https://cran.r-project.org/web/views/)) é uma lista especialmente mantida de pacotes agrupados em áreas. Esse pode ser um bom ponto de partida.
+
+## Quando o seu código não funciona: procurando ajuda com outras pessoas
+Se você está tendo trabalho usando alguma função, em  90% das vezes, a resposta que você procura já foi respondida em [Stack Overflow](http://stackoverflow.com/). Você pode procurar usando o campo [r].
+
+Se você não consegue encontrar a resposta, existem algumas funções úteis para ajudá-lo a tirar sua dúvida com outras pessoas:
+
+```
+?dput
+```
+
+Irá retornar o banco de dados com o qual você está trabalhando em um formato que ele possa ser copiado e colado por qualquer um em suas sessões em R.
+
+```{r }
+sessionInfo()
+```
+
+Irá imprimir a sua atual versão do R, bem como os pacotes que você tem carregados. Isso pode ser útil para ajudar outras pessoas a reproduzirem e corrigirem seus problemas.
+
+***
+<input type=button id=toggle_d6 value="Desafio 1"></input>
+
+Olhe a ajuda da função _c_. Que tipo de vetor você espera criar se você usar os seguintes comandos:
+```
+c(1, 2, 3)
+c('d', 'e', 'f')
+c(1, 2, 'f')
+```
+***
+<input type=button id=toggle_d7 value="Resposta do desafio 1"></input>
+
+A função _c()_ cria um vetor, no qual todos elementos são do mesmo tipo. No primeiro caso, os elementos são numéricos, no segundo, eles são caracteres, e no terceiro eles são caracteres: os valores numéricos foram "forçados" a serem caracteres.
+
+***
+<script>
+$("#toggle_d6").parent().next().hide();
+$("#toggle_d6").parent().next().next().hide();
+$("#toggle_d6").parent().next().next().next().hide();
+$("#toggle_d6").parent().next().next().next().next().hide();
+;
+$("#toggle_d6").on( "click", function(){
+  $("#toggle_d6").parent().next().toggle();
+  $("#toggle_d6").parent().next().next().toggle();
+  $("#toggle_d6").parent().next().next().next().toggle();
+  $("#toggle_d6").parent().next().next().next().next().toggle();
+} );
+$("#toggle_d7").parent().next().hide();
+$("#toggle_d7").parent().next().next().hide();
+;
+$("#toggle_d7").on( "click", function(){
+  $("#toggle_d7").parent().next().toggle();
+  $("#toggle_d7").parent().next().next().toggle();
+} );
+</script>
+***
+
+
+***
+<input type=button id=toggle_d8 value="Desafio 2"></input>
+
+Olhe a ajuda para a função _paste_. Você precisará dela mais adiante. Qual a diferença entre os argumentos _sep_ e _collapse_?
+
+***
+<input type=button id=toggle_d9 value="Resposta do desafio 2"></input>
+
+```
+help("paste")
+?paste
+```
+***
+<script>
+$("#toggle_d8").parent().next().hide();
+$("#toggle_d8").parent().next().next().hide();
+$("#toggle_d8").parent().next().next().next().hide();
+;
+$("#toggle_d8").on( "click", function(){
+  $("#toggle_d8").parent().next().toggle();
+  $("#toggle_d8").parent().next().next().toggle();
+  $("#toggle_d8").parent().next().next().next().toggle();
+} );
+$("#toggle_d9").parent().next().hide();
+$("#toggle_d9").parent().next().next().hide();
+$("#toggle_d9").parent().next().next().next().hide();
+;
+$("#toggle_d9").on( "click", function(){
+  $("#toggle_d9").parent().next().toggle();
+  $("#toggle_d9").parent().next().next().toggle();
+  $("#toggle_d9").parent().next().next().next().toggle();
+} );
+</script>
+***
+
+
+***
+<input type=button id=toggle_d10 value="Desafio 3"></input>
+
+Use a função help para achar a função (e seus parâmetros associados) que pode ser usada para carregar dados de um arquivo csv no qual as colunas são delimitadas com "\\t" (tab) e decimais são pontos “.”. Essa verificação para separadores decimais é importante, especialmente se você está trabalhando com colaboradores internacionais, porque países diferentes possuem diferentes convenções para o ponto decimal (isto é, vírgula ou ponto). Dica: use ??csv para buscar funções relacionadas com csv.
+
+***
+<script>
+$("#toggle_d10").parent().next().hide();
+$("#toggle_d10").parent().next().next().hide();
+;
+$("#toggle_d10").on( "click", function(){
+  $("#toggle_d10").parent().next().toggle();
+  $("#toggle_d10").parent().next().next().toggle();
+} );
+</script>
+***
+
+Outras opções de ajuda
+
+* [Quick R](http://www.statmethods.net/)
+
+* [RStudio cheat sheets](https://www.rstudio.com/resources/cheatsheets/)
+
+* [Cookbook for R](http://www.cookbook-r.com/)
+
+### Pontos chave
+
+* Use _help()_ para buscar ajuda online sobre R.
+
+
+
+----------
+   AULA 4
+=======
+
+
+# Estruturas de dados
+
+***
+> Visão Geral
+
+**Ensino**: 40 min 
+**Exercícios**: 15 min 
+
+**Questões**
+
+* Como eu posso ler dados no R?
+* Quais são os tipos básicos de dados no R?
+* Como eu represento informações categóricas em R?
+
+**Objetivos**
+
+* Conhecer os diferentes tipos de dados.
+* Começar a explorar data frames, e entender como eles estão relacionados a vetores, fatores e listas.
+* Ser capaz de perguntar ao R questões sobre o tipo, classe e estrutura de um objeto.
+
+
+Uma das características mais poderosas do R é sua capacidade de lidar com dados em tabelas - como você já deve ter visto em uma planilha em CSV. Vamos começar fazendo um banco de dados para testes na sua pasta _data/_, chamado _ directory, called _feline-data.csv_:
+
+```
+coat,weight,likes_string
+calico,2.1,1
+black,5.0,0
+tabby,3.2,1
+```
+
+#### Dica: Editando arquivos de texto em R
+
+Alternativamente, você pode criar _data/feline-data.csv_ usando um editor de texto (Nano), ou dentro do RStudio com o item do menu **Arquivo -> Novo Arquivo -> Arquivo de texto**.
+
+Você pode carregar isso no R com o seguinte comando:
+
+```{r }
+cats <- read.csv(file = "data/feline-data.csv")
+cats
+```
+
+A função _read.csv_ é utilizada para ler dados de tabelas armazenados em um arquivo de texto onde as colunas são delimitadas por vírgulas (csv = comma separated values, i.e., valores separados por vírgulas). Tabs também são comumente usados para separar colunas - se os seus dados estão neste formato você pode usar a função _read.delim_. Se as colunas nos seus dados são delimitadas por um outro caractere além de vírgulas ou tabs, você pode usar a função _read.table_ , que é mais geral e flexível.
+
+Já podemos começar a explorar o nosso banco de dados, imprimindo colunas especificando elas com o operador _$_:
+
+```{r }
+cats$weight
+```
+```{r }
+cats$coat
+```
+
+Nós podemos fazer outras operações nas colunas:
+
+```{r }
+## Say we discovered that the scale weighs two Kg light:
+cats$weight + 2
+```
+```{r }
+paste("My cat is", cats$coat)
+```
+
+Mas e se fizermos
+
+```{r }
+cats$weight + cats$coat
+```
+
+Entendendo o que aconteceu aqui é a chave para analisar dados em R de maneira satisfatória.
+
+

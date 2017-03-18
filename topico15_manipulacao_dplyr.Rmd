@@ -1,0 +1,239 @@
+---
+title: "Actividade1"
+author: "Heidi Mara Sousa"
+date: "11 de março de 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Manipulação de *dataframe* com *dplyr*
+
+
+|<big>`Visão Geral`</big>|
+|----------
+|Aprendendo:  40 min |
+|Exercícios: 15 min  |
+
+**Questões**
+
+- Como eu posso manipular *dataframe* com repetições?
+
+**Objetivo**
+
+- Ser capaz de usa as seis formas de manipular dataframe com ligação no *dplyr*.
+
+***
+
+Manipulação de *dataframes* significa muitas coisas para diferentes pesquisadores, frequentemente selecionamos determinadas observações (linhas) ou variáveis (colunas), muitas vezes agrupamos os dados por uma determinada variável(s), ou até mesmo calculamos estatística de resume. Podemos fazer essas operações usando operações básicas do R.
+
+
+```{r, echo=FALSE} 
+gapminder <- read.csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv")
+```
+
+```{r}
+mean(gapminder[gapminder$continent == "Africa", "gdpPercap"])
+
+```
+
+```{r}
+mean(gapminder[gapminder$continent == "Americas", "gdpPercap"])
+
+```
+
+```{r}
+mean(gapminder[gapminder$continent == "Asia", "gdpPercap"])
+
+```
+
+Mas isso não é muito desejável porque há algumas repetições. Se repetir irá lhe custar tempo, tanto agora como mais tarde, e potencialmente introduzir alguns erros desagradáveis.
+
+
+
+##O pacote dplyr##
+
+Felizmente, o pacote dplyr oferece muitas funções úteis para manipulação de *dataframes* de forma a reduzir a repetição acima, a probabilidade de cometer erros e, provavelemente, até mesmo economizar alguma digitação. Como bonus adicional, você pode achar o dplyr mais facil de ler.
+Aqui vamos abordar seis das funções mais usadas, bem como usar pipes (%>%) para combiná-las.
+- select() 
+- filter()
+- group_by()
+- summarize()
+- mutate() 
+
+Se ainda você não tem este pacote instalado, por favor faça-o:
+
+```{r}
+# install.packages("dplyr")
+```
+
+
+Agora vamos carregar o pacote:
+
+```{r, include=FALSE}
+library(dplyr)
+```
+~~~~~~~~~~~~~~
+library(dplyr)
+~~~~~~~~~~~~~~
+
+## Usando select()
+
+Se, por exemplo, quiseremos avançar com apenas algumas das variáveis em nosso dataframe, poderiamos usar a função select(). Isso manterá apenas as variáveis selecionadas.
+
+
+
+```{r}
+year_country_gdp <- select(gapminder,year,country,gdpPercap)
+
+```
+
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/13-dplyr-fig1.png)
+
+
+
+Se abrirmos year_contry_gdp veremos que ele contém somente o ano, país e gdpPercap. Acima usamos a linguagem "normal", mas a força do dplyr está na combinação de diversas funcões usando pipes. Como a linguagem do pipe é diferente de qualquer outra que já tenhamos visto no R, vamos repetir o que já fizemos acima usando pipes.
+
+```{r}
+year_country_gdp <- gapminder %>% select(year,country,gdpPercap)
+
+```
+
+Para te ajudar a entender porquê que escrevemos isto desta forma, iremos analizá-lo passo-a-passo. Primeiramente nós importamos o *dataframe* *gapminder* e o passamos adiante, usando o simbolo do *pipe* %>%,  para o próximo passo, que é a função select(). Neste caso não especificamos qual elemento dos dados usamos na função *select()* já que a função o obtém do *pipe* anterior. **Fato Interesante**: Existe uma boa chance de já teres encontrado *pipes* no *Shell*. Em R, o símbolo do *pipe* é %>% enquanto que no *Shell* é | , mas o conceito é o mesmo!
+
+
+##Usando filter()
+
+Se agora quizermos avançar com o contéudo acima, mas somente para países europeos, podemos combinar *select* e *filter*.
+
+```{r}
+year_country_gdp_euro <- gapminder %>%
+    filter(continent=="Europe") %>%
+    select(year,country,gdpPercap)
+
+```
+
+
+##Desafio 1
+
+Escreva um único comando (que poderá ter multiplas linhas e incluir *pipes*) que irá produzir um *dataframe* que possuí os valores africanos para *lifeExp*, *country* e *year*, mas não para outros continentes. Quantas linhas tem o seu dataframe e porquê?
+
+##Solução do desafio 1
+
+```{r}
+year_country_lifeExp_Africa <- gapminder %>%
+                           filter(continent=="Africa") %>%
+                           select(year,country,lifeExp)
+
+```
+
+
+Tal como da última vez, primeiramente passamos o *dataframe* *gapminder* para a função *filter()*, depois passamos a versão filtrada do *dataframe gapminder* para a função select(). Nota: Neste caso a ordem das operações é muito importante. Se usarmos *"select"* primeiro, o filtro não será capaz de encontrar a variável Continent já que o teríamos removido no passo anterior.
+
+
+##Usando group_by() e summarize()
+
+Agora, nós deveríamos estar reduzindo o erro que pode ser gerado pela repetitividade (repetitividade essa originado pelas operações básicas do R), mas até agora não fizemos isso, já que teríamos que repetir o acima para cada continente. Em vez de *filter()*, que se irá passar observações que atendam aos seus critérios (no acima: continent == "Europe"), podemos usar *group_by()*, que irá essencialmente usar todos os critérios exclusivos que você poderia ter usado no filtro.
+
+```{r}
+str(gapminder)
+
+```
+
+```{r}
+str(gapminder %>% group_by(continent))
+
+```
+
+
+Você vai notar que a estrutura do *dataframe* onde usamos *group_by()* (grouped_df) n?o ? o mesmo que o *gapminder(data.frame)* original. Um *grouped_df* pode ser entendido como uma *list* onde cada item na *list*  ? um *data.frame* que contém somente a linha que corresponde a um valor particular *continent* (pelo menos no exemplo acima).
+
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/13-dplyr-fig2.png)
+
+##Usando summarize()
+
+O caso acima possui algumas desvantágens sendo que o uso de *group_by()* será muito mais interessante em conjunto com *summarize()*. Isso vai permitir o usuário criar nova(s) variáveis usando funções que repetem para cada um dos *dataframes* específicos para cada continente.  Isso quer dizer que, usando a função *group_by()*, dividimos o nosso *dataframe* original em várias partes, depois podemos rodar funções (ex: mean() ou sd()) dentro do *summarize()*.
+
+```{r}
+gdp_bycontinents <- gapminder %>%
+    group_by(continent) %>%
+    summarize(mean_gdpPercap=mean(gdpPercap)) 
+
+```
+![](http://swcarpentry.github.io/r-novice-gapminder/fig/13-dplyr-fig3.png)
+
+Que nos permite calcular a média gdpPercap para cada continente, mas isso fica ainda melhor.
+
+
+
+##Desafio 2
+
+Calcule a expetativa de vida média por país. Qual tem a maior expetativa de vida média e qual tem a menor expetativa de vida média?
+
+##Solução do desafio 2
+```{r}
+lifeExp_bycountry <- gapminder %>%
+   group_by(country) %>%
+   summarize(mean_lifeExp=mean(lifeExp))
+lifeExp_bycountry %>% 
+   filter(mean_lifeExp == min(mean_lifeExp) | mean_lifeExp == max(mean_lifeExp))
+
+```
+
+Outra forma de fazer isto é usar a função *dplyr arrange()*, que organiza as linhas num data frame de acordo com a ordem de uma ou mais variáveis do *dataframe*. A função *arrange()* possui uma syntax similar a outras funções do paote *dplyr*. Você pode usar *desc()*  dentro de *arrange()*  para listar em ordem descendente.
+
+
+```{r}
+lifeExp_bycountry %>%
+   arrange(mean_lifeExp) %>%
+   head(1)
+```
+
+```{r}
+lifeExp_bycountry %>%
+   arrange(desc(mean_lifeExp)) %>%
+   head(1)
+```
+
+
+A funçãoo *group_by()* nos permite agrupar por múltiplas variáveis. Vamos agrupar por *year* e *continent*.
+
+```{r}
+gdp_bycontinents_byyear <- gapminder %>%
+    group_by(continent,year) %>%
+    summarize(mean_gdpPercap=mean(gdpPercap))
+```
+
+
+Isso já é bastante poderoso, mas fica ainda melhor! Você não está limitado a definir somente uma nova variável no *summarize()*.
+
+
+```{r}
+gdp_pop_bycontinents_byyear <- gapminder %>%
+    group_by(continent,year) %>%
+    summarize(mean_gdpPercap=mean(gdpPercap),
+              sd_gdpPercap=sd(gdpPercap),
+              mean_pop=mean(pop),
+              sd_pop=sd(pop))
+```
+
+
+##Usando mutate()
+
+Também podemos criar novas variáveis antes de (ou mesmo depois) resumir informações usando *mutate()*.
+
+
+```{r}
+gdp_pop_bycontinents_byyear <- gapminder %>%
+    mutate(gdp_billion=gdpPercap*pop/10^9) %>%
+    group_by(continent,year) %>%
+    summarize(mean_gdpPercap=mean(gdpPercap),
+              sd_gdpPercap=sd(gdpPercap),
+              mean_pop=mean(pop),
+              sd_pop=sd(pop),
+              mean_gdp_billion=mean(gdp_billion),
+              sd_gdp_billion=sd(gdp_billion))
+
+```
