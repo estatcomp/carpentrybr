@@ -1,21 +1,21 @@
 ---
-title: "Introdução ao R e RStudio"
-teaching: 45
-exercises: 10
+title: "IntroduÃ§Ã£o ao R e RStudio"
 Questões:
-- "Como encontrar o seu camihno ao redor de RStudio?"
-- "Como interagir com R?"
-- "Como gerenciar seu ambiente?"
-- "Como instalar pacotes?"
-Objetivos:
-- "Obter familiaridade com os vários panéis no IDE do RStudio"
-- "Obter familiaridade com os botões, atalhos e opções no IDE do RStudio"
-- "Entender variáveis e como atribuir a ela"
-- "Ser capaz de gerenciar seu espaço de trabalho em uma sessaão interativa de R"
-- "Ser capaz de usar operaçoões matemáticas e de comparação"
-- "Ser capaz de chamar funções"
-- "Introduzir o gerenciamento de pacotes"  
+- Como encontrar o seu camihno ao redor de RStudio?
+- Como interagir com R?
+- Como gerenciar seu ambiente?
+- Como instalar pacotes?
+exercises: 10
 source: Rmd
+teaching: 45
+Objetivos:
+- Obter familiaridade com os vÃ¡rios panÃ©is no IDE do RStudio
+- Obter familiaridade com os botÃµes, atalhos e opÃ§Ãµes no IDE do RStudio
+- Entender variÃ¡veis e como atribuir a ela
+- Ser capaz de gerenciar seu espaÃ§o de trabalho em uma sessaÃ£o interativa de R
+- Ser capaz de usar operaÃ§oÃµes matemÃ¡ticas e de comparaÃ§Ã£o
+- Ser capaz de chamar funÃ§Ãµes
+- Introduzir o gerenciamento de pacotes
 ---
 
 ```{r, include=FALSE}
@@ -305,10 +305,10 @@ x = 1/40
 
 Mas isso é muito menos comum entre os usuários de R. O mais importante é ser **consistente** com o operador que você usa. Há ocasionalmente lugares onde é menos confuso usar `<-` than `=`, e é o símbolo mais comum usado na comunidade. Portanto, a recomendação é usar `<-`. 
 
-## Vectorization
+## Vetorização
 
-One final thing to be aware of is that R is *vectorized*, meaning that
-variables and functions can have vectors as values. For example
+É de extrema relevância compreender que o R é um software vetorizado. Isso simplesmnte quer dizer que variáveis e funções podem receber vetores. 
+Veja os exemplos abaixo:
 
 ```{r}
 1:5
@@ -317,94 +317,81 @@ x <- 1:5
 2^x
 ```
 
-This is incredibly powerful; we will discuss this further in an
-upcoming lesson.
+A possibilidade de variáveis e funções receber valores faz do R um software extremamente poderoso. Este tópico será abordado em detalhes adiante.
 
 
-## Managing your environment
+## Controlando o ambiente de trabalho
 
-There are a few useful commands you can use to interact with the R session.
+Existem alguns comandos que o usuário pode utilizar para interagir com o ambiente de trabalho do R.
 
-`ls` will list all of the variables and functions stored in the global environment
-(your working R session):
+A função `ls`, por exemplo, lista todas as variáveis e funções gravadas no ambiente de trabalho.
+
 
 ```{r}
 ls()
 ```
 
-> ## Tip: hidden objects
+> ## Dica: Objetos escondidos
 >
-> Like in the shell, `ls` will hide any variables or functions starting
-> with a "." by default. To list all objects, type `ls(all.names=TRUE)`
-> instead
+> A função `ls()`não mostra variáveis e funções que começão com `.`.
+> A função  Para listar todos os objetos, inclusive os que   iniciam com `.`, digite `ls(all.names=TRUE)` e não `ls()`.
+> 
 >
 {: .callout}
 
-Note here that we didn't given any arguments to `ls`, but we still
-needed to give the parentheses to tell R to call the function.
+Note que na função `ls` não é necessário fornecer argumentos, mas é necessário colocar parêntesis para que o R entenda que se trata de uma função.
 
-If we type `ls` by itself, R will print out the source code for that function!
+Se digitarmos apenas `ls` o R nos fornecerá o código fonte da função!
 
 ```{r}
 ls
 ```
 
-You can use `rm` to delete objects you no longer need:
+Pode ser interessante deletar objetos que não serão utilizados adiante. Para isso utilizamos a função `rm`.
 
 ```{r}
 rm(x)
 ```
 
-If you have lots of things in your environment and want to delete all of them,
-you can pass the results of `ls` to the `rm` function:
+Se muitos objetos devem ser excluídos de uma só vez não há necessidade de excluir um por um. Basta utilizar a função `ls` conjugada com a `rm` da seguinte forma:
 
 ```{r}
 rm(list = ls())
 ```
 
-In this case we've combined the two. Like the order of operations, anything
-inside the innermost parentheses is evaluated first, and so on.
+Neste caso duas funções foram utilizadas em conjunto. Sempre que este for o caso o que está localizado dentro do parêntesis mais interno será avaliado primeiro e assim em diante.
 
-In this case we've specified that the results of `ls` should be used for the
-`list` argument in `rm`. When assigning values to arguments by name, you *must*
-use the `=` operator!!
+No caso acima foi especificado que o resultado da função `ls` deveria ser usado na forma de lista `list` como argumento da função `rm`. Quando destinados valores de argumentos a funções por nome, o operador a ser utilizado deverá ser o símbolo `=`.
 
-If instead we use `<-`, there will be unintended side effects, or you may get an error message:
-
+Se utilizarmos `<-` teremos efeitos indesejados ou  mensagens de erro.
 ```{r, error=TRUE}
 rm(list <- ls())
 ```
 
-> ## Tip: Warnings vs. Errors
+> ## Dica: Avisos vs Erros
 >
-> Pay attention when R does something unexpected! Errors, like above,
-> are thrown when R cannot proceed with a calculation. Warnings on the
-> other hand usually mean that the function has run, but it probably
-> hasn't worked as expected.
+> Fique atento pois o R poderá fazer algo inesperado.
+> Erros, como no caso acima, ocorrem quando o R não consegue efetuar as operações.
+> Avisos, por outro lado, indicam que o R conseguiu efetuar as operações, mas algo  provavelmente não ocorreu como esperado.
 >
-> In both cases, the message that R prints out usually give you clues
-> how to fix a problem.
+> Em ambos os casos, as mensagens que o R fornece ajudam a consertar o problema.
+> 
 >
 {: .callout}
 
-## R Packages
+## Pacotes do R
 
-It is possible to add functions to R by writing a package, or by
-obtaining a package written by someone else. As of this writing, there
-are over 10,000 packages available on CRAN (the comprehensive R archive
-network). R and RStudio have functionality for managing packages:
+É possível adicionar funções ao R através da escrita de pacote escritos por você mesmo, ou por pacotes escritos por outras pessoas. Hoje existem mais de 7000 pacotes disponíveis no CRAN (*the comprehensive R archive network*). O R e o Rstudio possuem elevada funcionalidade no quesito de gerenciamento de pacotes:
 
-* You can see what packages are installed by typing
-  `installed.packages()`
-* You can install packages by typing `install.packages("packagename")`,
-  where `packagename` is the package name, in quotes.
-* You can update installed packages by typing `update.packages()`
-* You can remove a package with `remove.packages("packagename")`
-* You can make a package available for use with `library(packagename)`
+* É possível ver quais pacotes estão instalados. Para isso devemos digitar `installed.packages()`.
+* É possível instalar novos pacotes ao digitar `install.packages("packagename")`, onde `packagename` é o nome do pacote a ser instalado. 
+* É possível atualizar pacotes já instalados. A função utilizada é `update.packages()`.
+* É possível remover pacotes com a função `remove.packages("packagename")`. 
+* É possível tornar um pacote habilitado ao uso. A função utilizada neste caso é `library(packagename)`.
 
-> ## Challenge 1
+> ## Desafio 1
 >
-> Which of the following are valid R variable names?
+> Quais nomes a seguir são válidos para variáveis no R ?
 > ```{r, eval=FALSE}
 > min_height
 > max.height
@@ -416,9 +403,9 @@ network). R and RStudio have functionality for managing packages:
 > celsius2kelvin
 > ```
 >
-> > ## Solution to challenge 1
+> > ## Solução do desafio 1
 > >
-> > The following can be used as R variables:
+> > Os nomes a seguir são válidos:
 > > ```{r ch1pt1-sol, eval=FALSE}
 > > min_height
 > > max.height
@@ -426,12 +413,12 @@ network). R and RStudio have functionality for managing packages:
 > > celsius2kelvin
 > > ```
 > >
-> > The following creates a hidden variable:
+> > O nome a seguir cria uma variável escondida
 > > ```{r ch1pt2-sol, eval=FALSE}
 > > .mass
 > > ```
 > >
-> > The following will not be able to be used to create a variable
+> > Os nomes a seguir não podem ser usados para nomear objetos
 > > ```{r ch1pt3-sol, eval=FALSE}
 > > _age
 > > min-length
@@ -440,10 +427,9 @@ network). R and RStudio have functionality for managing packages:
 > {: .solution}
 {: .challenge}
 
-> ## Challenge 2
+> ## Desafio 2
 >
-> What will be the value of each  variable  after each
-> statement in the following program?
+> Quais serão os valores das variáveis definidas abaixo ?
 >
 > ```{r, eval=FALSE}
 > mass <- 47.5
@@ -452,70 +438,70 @@ network). R and RStudio have functionality for managing packages:
 > age <- age - 20
 > ```
 >
-> > ## Solution to challenge 2
+> > ## Solução do desafio 2
 > >
 > > ```{r ch2pt1-sol}
 > > mass <- 47.5
 > > ```
-> > This will give a value of `r mass` for the variable mass
+> > Este comando atribui o valor 47.5 para a variável `r mass` for the variable mass
 > >
 > > ```{r ch2pt2-sol}
 > > age <- 122
 > > ```
-> > This will give a value of `r age` for the variable age
+> > Este comando atribiu o valor 122 para a variável `r age` 
 > >
 > > ```{r ch2pt3-sol}
 > > mass <- mass * 2.3
 > > ```
-> > This will multiply the existing value of `r mass/2.3` by 2.3 to give a new value of
-> > `r mass` to the variable mass.
+> > O valor da variável `r mass`será dividido por 2.3 e a variável `r mass` passará a ter um novo valor.
+> > 
 > >
 > > ```{r ch2pt4-sol}
 > > age <- age - 20
 > > ```
-> > This will subtract 20 from the existing value of `r age + 20 ` to give a new value
-> > of `r age` to the variable age.
+> > Será realizada uma subtração de 20 unidades na variável `r age`.
+> > 
 > {: .solution}
 {: .challenge}
 
 
-> ## Challenge 3
+> ## Desafio 3
 >
-> Run the code from the previous challenge, and write a command to
-> compare mass to age. Is mass larger than age?
+> Rode os códigos do desafio anterior, escreva um comando e compare massa com idade. 
+> A massa é maior que a idade ?
 >
-> > ## Solution to challenge 3
+> > ## Solução do desafio 3
 > >
-> > One way of answering this question in R is to use the `>` to set up the following:
+> > Uma maneira de realizar esta tarefa é utilizar `>`:
 > > ```{r ch3-sol}
 > > mass > age
 > >```
-> > This should yield a boolean value of TRUE since `r mass` is greater than `r age`.
+> > O resultado a ser retornado deve ser `TRUE` porque a variável `r mass` é maior que `r age`.
 > {: .solution}
 {: .challenge}
 
 
-> ## Challenge 4
+> ## Desafio 4
 >
-> Clean up your working environment by deleting the mass and age
-> variables.
+> Limpe o seu ambiente de trabalho. Delete as variáveis massa e idade.
 >
-> > ## Solution to challenge 4
+>
+> > ## Solução do desafio 4
 > >
-> > We can use the `rm` command to accomplish this task
+> > O comando `rm` pode ser utilizado para realizar essa tarefa
 > > ```{r ch4-sol}
 > > rm(age, mass)
 > > ```
 > {: .solution}
 {: .challenge}
 
-> ## Challenge 5
+> ## Desafio 5
 >
-> Install the following packages: `ggplot2`, `plyr`, `gapminder`
+> Instale os pacotes `ggplot2`, `plyr` e `gapminder`.
 >
-> > ## Solution to challenge 5
+> > ## Solução do desafio 5
 > >
-> > We can use the `install.packages()` command to install the required packages.
+> > Podemos utilizar o comando `install.packages()` para instalar os referidos pacotes.
 > > ```{r ch5-sol, eval=FALSE}
 > > install.packages("ggplot2")
 > > install.packages("plyr")
