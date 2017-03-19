@@ -85,6 +85,7 @@ Existem duas maneiras principais de se trabalhar dentro do RStudio.
 >você acabou de executar, não há necessidade de reajustar a seção e Run, 
 >você pode usar o próximo botão, Re-Run the previous code region. Isso 
 >executará o bloco de código anterior incluindo as modificações feitas.
+>
 {: .callout}
 
 ## Introdução a R
@@ -121,11 +122,11 @@ Cada vez que você pressionar a tecla Enter e a sessão R mostre um "+" em vez de 
 >
 > Se você estiver usando R a partir da linha de comando em vez de 
 >dentro RStudio, você precisará usar `Ctrl+C` em vez de `Esc` 
->para cancelar o comando. Isso também se aplica aos usuários de Mac!
+> para cancelar o comando. Isso também se aplica aos usuários de Mac!
 >
->Cancelar um comando não é útil somente para matar comandos incompletos: 
->você também pode usá-lo para dizer a R para parar o código em execução
->(por exemplo, se estiver demorando muito mais do que você espera) 
+> Cancelar um comando não é útil somente para matar comandos incompletos: 
+> você também pode usá-lo para dizer a R para parar o código em execução
+> (por exemplo, se estiver demorando muito mais do que você espera) 
 >ou para se livrar do código que você está escrevendo. 
 >
 {: .callout}
@@ -235,19 +236,18 @@ Podemos também fazer comparação em R:
 >
 >Uma palavra de advertência sobre a comparação de números: 
 >você nunca deve usar `==` para comparar dois números a
->menos que sejam inteiros (um tipo de dados que pode representar
->especificamente apenas números inteiros).
+> menos que sejam inteiros (um tipo de dados que pode representar
+> especificamente apenas números inteiros).
 >
->Os computadores só podem representar números decimais com 
+> Os computadores só podem representar números decimais com 
 >um certo grau de precisão, então dois números que parecem os mesmos
 >quando impressos por R, podem realmente ter diferentes representações 
 >subjacentes e, portanto, ser diferentes por uma pequena margem de erro 
 >(chamada tolerância numérica da máquina).
 >
 > Em vez disso, você deve usar a função `all.equal`.
->
-> Leitura adicional: [http://floating-point-gui.de/](http://floating-point-gui.de/)
->
+> Leitura adicional:     [http://floating-point-gui.de/](http://floating-point-gui.de/)
+> 
 {: .callout}
 
 ## Variáveis e atribuição 
@@ -336,7 +336,6 @@ ls()
 > A função `ls()`não mostra variáveis e funções que começão com `.`.
 > A função  Para listar todos os objetos, inclusive os que   iniciam com `.`, digite `ls(all.names=TRUE)` e não `ls()`.
 > 
->
 {: .callout}
 
 Note que na função `ls` não é necessário fornecer argumentos, mas é necessário colocar parêntesis para que o R entenda que se trata de uma função.
@@ -375,7 +374,6 @@ rm(list <- ls())
 > Avisos, por outro lado, indicam que o R conseguiu efetuar as operações, mas algo  provavelmente não ocorreu como esperado.
 >
 > Em ambos os casos, as mensagens que o R fornece ajudam a consertar o problema.
-> 
 >
 {: .callout}
 
@@ -443,23 +441,23 @@ rm(list <- ls())
 > > ```{r ch2pt1-sol}
 > > mass <- 47.5
 > > ```
-> > Este comando atribui o valor 47.5 para a variável `r mass` for the variable mass
+> > Este comando atribui o valor 47.5 para a variável ` mass` for the variable mass
 > >
 > > ```{r ch2pt2-sol}
 > > age <- 122
 > > ```
-> > Este comando atribiu o valor 122 para a variável `r age` 
+> > Este comando atribiu o valor 122 para a variável ` age` 
 > >
 > > ```{r ch2pt3-sol}
 > > mass <- mass * 2.3
 > > ```
-> > O valor da variável `r mass`será dividido por 2.3 e a variável `r mass` passará a ter um novo valor.
+> > O valor da variável ` mass`será dividido por 2.3 e a variável ` mass` passará a ter um novo valor.
 > > 
 > >
 > > ```{r ch2pt4-sol}
 > > age <- age - 20
 > > ```
-> > Será realizada uma subtração de 20 unidades na variável `r age`.
+> > Será realizada uma subtração de 20 unidades na variável ` age`.
 > > 
 > {: .solution}
 {: .challenge}
@@ -476,7 +474,7 @@ rm(list <- ls())
 > > ```{r ch3-sol}
 > > mass > age
 > >```
-> > O resultado a ser retornado deve ser `TRUE` porque a variável `r mass` é maior que `r age`.
+> > O resultado a ser retornado deve ser `TRUE` porque a variável ` mass` é maior que ` age`.
 > {: .solution}
 {: .challenge}
 
