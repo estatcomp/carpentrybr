@@ -1,5 +1,6 @@
 ---
-title: "Exploring Data Frames"
+title: "Explorando Data Frames"
+author: Daniel Henrique Barboza
 Pontos chave:
 - Usar `cbind()` para adicionar uma nova coluna a um data frame.
 - Usar `rbind()` para adicionar uma nova linha a um data frame.
@@ -19,10 +20,10 @@ Objetivo:
 output:
   html_document: default
   pdf_document: default
-questions: Como manipular um data frame?
+Questões: Como manipular um data frame?
 source: Rmd
-teaching: 20
-exercises: 10
+Ensino: 20
+Exercícios: 10
 ---
 
 ```{r, include=FALSE}
@@ -34,7 +35,7 @@ Neste ponto, você viu isso tudo - na última lição, nós visitamos todos os t
 
 ## Adicionando colunas e linhas a um data frame
 
-Aprendemos anteriormente que colunas em um data frame eram vetores, tal que nossos dados eram consistentes em tipo por coluna.Tal que, se nós quiséssemos adicionar uma nova coluna nós precisamos começar fazendo um novo vetor:
+Aprendemos anteriormente que colunas em um data frame eram vetores, tal que nossos dados eram consistentes em tipo por coluna. Tal que, se nós quiséssemos adicionar uma nova coluna nós precisaríamos começar fazendo um novo vetor:
 
 ```{r, echo = FALSE}
 cats <- read.csv("data/feline-data.csv")
@@ -51,7 +52,7 @@ Nós podemos então adicionar como uma nova coluna via:
 cats <- cbind(cats, age)
 ```
 
-Por que isso não funcionou? Com certeza, R quer ver um elemento em nossa nova coluna para cada linha da tabela:
+Por que isso não funcionou? Com certeza, o R quer ver um elemento em nossa nova coluna para cada linha da tabela:
 
 ```{r}
 cats
@@ -69,9 +70,8 @@ cats <- rbind(cats, newRow)
 
 ## Fatores
 
-Outra coisa para se prestar atenção surgiu - quando o R cria um fator, **it only
-allows whatever is originally there when our data was first loaded**, os quais eram 'black', 'calico' e 'tabby' em nosso caso. Qualquer coisa nova que não se ajustar em uma das categorias é rejeitada como sem sentido (transforma-se NA).
-O problema é dizer que adicionamento 'casco de tartaruga' ao nosso fator *casaco* , mas 3.3 (um número), TRUE (um lógico) e 9 (um número) foram adicionados com sucesso a *peso*, *gosta_cordas*, e *idade*, respectivamente, desde que esses valores não são fatores e um gato com um agasalho 'casco de tartaruga', explicitamente adicionar 'casco de tartaruga' como um *nível* no fator:
+Outra coisa para se prestar atenção surgiu - quando o R cria um fator, ele apenas permite os que estavam originalmente na tabela quando os dados foram carregados pela primeira vez, os quais eram 'black', 'calico' e 'tabby' em nosso caso. Qualquer coisa nova que não se ajustar em uma das categorias é rejeitada como sem sentido (transforma-se NA).
+O aviso está dizendo que não conseguimos adicionar 'tortoiseshell' ao nosso fator *coat*, mas 3.3 (um número), TRUE (um lógico) e 9 (um número) foram adicionados com sucesso a *weight*, *likes_string*, e *age*, respectivamente, desde que esses valores não são fatores e um gato com um agasalho 'tortoiseshell', explicitamente adicionar 'tortoiseshell' como um *nível* no fator:
 
 ```{r}
 levels(cats$coat)
@@ -79,7 +79,7 @@ levels(cats$coat) <- c(levels(cats$coat), 'tortoiseshell')
 cats <- rbind(cats, list("tortoiseshell", 3.3, TRUE, 9))
 ```
 
-Alternativamente, nós podemos modificar uma coluna e fatores para um vetor de caracteres; nós perdemos o acesso a categorias do fator, mas podemos subsequentemente adicionar qualquer palavra a coluna sem necessidade de vigiar os níveis do fator:
+Alternativamente, nós podemos modificar uma coluna de fatores para um vetor de caracteres; nós perdemos o acesso a categorias do fator, mas podemos subsequentemente adicionar qualquer palavra a coluna sem necessidade de vigiar os níveis do fator:
 
 ```{r}
 str(cats)
@@ -101,7 +101,7 @@ Nós podemos pedir um data frame sem essa linha ofensiva:
 cats[-4,]
 ```
 
-Note que a vírgula com nada após indica que queremos remover a linha inteira.
+Note que a vírgula com nada após indica que queremos remover a quarta linha inteiramente.
 
 Nota: Nós podemos também remover várias linhas de uma só vez colocando as linhas em um vetor: `cats[c(-4,-5),]`
 
@@ -119,14 +119,14 @@ cats <- na.omit(cats)
 
 ## Anexando a um data frame
 
-A chave para lembrar quando adicionar dados a um data frame é *colunas são vetores de fatores, e linhas são listas.* Podemos também juntar dois data frames com `rbind`:
+A chave para lembrar quando adicionar dados a um data frame é *colunas são vetores ou fatores, e linhas são listas.* Podemos também juntar dois data frames com `rbind`:
 
 ```{r}
 cats <- rbind(cats, cats)
 cats
 ```
 
-Mas agora o nome das linhas não desnecessariamente complicados. Nós podemos resmover o nome das linhas, e R irá automativamente renomear sequencialmente:
+Mas agora o nome das linhas estão desnecessariamente complicados. Nós podemos remover o nome das linhas, e R irá renomeá-las sequencialmente:
 
 ```{r}
 rownames(cats) <- NULL
@@ -142,11 +142,11 @@ cats
 >                  y = c(TRUE, TRUE, FALSE),
 >                  stringsAsFactors = FALSE)
 > ```
-> Fazer um data frame que contém as seguintes informação de você mesmo:
+> Fazer um data frame que contém as seguintes informação sobre você mesmo:
 >
-> - Nome
-> - Sobrenome
-> - Número da sorte
+> - Nome (name)
+> - Sobrenome (last name)
+> - Número da sorte (lucky number)
 >
 > Então use `rbind` para adicionar um novo registro da pessoa sentada ao teu lado.
 > Finalmente, utilize `cbind` para adicionar uma coluna para cada pessoa a responder a questão, "É hora do coffee break?"
@@ -175,9 +175,8 @@ gapminder <- read.csv("data/gapminder-FiveYearData.csv")
 > * Outro tipo de arquivo que você deve encontrar são os dados separados por tabulação, do inglês tab-separetad value files (.tsv). Para especificar tabulação como um separador, utilize `"\\t"` ou `read.delim()`.
 >
 > * Arquivo também podem ser baixados diretamente da internet para uma pasta local
-> * Files can also be downloaded directly from the Internet into a local
 > de seu escolha dentro de seu computador utilizando a função `dowbload.file`.
-> A função `read.csv` pode ser executada para lear o arquivo baixado, por exemplo:
+> A função `read.csv` pode ser executada para ler o arquivo baixado, por exemplo:
 > ```{r eval=FALSE, echo=TRUE}
 > download.file("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv", destfile = "data/gapminder-FiveYearData.csv")
 > gapminder <- read.csv("data/gapminder-FiveYearData.csv")
@@ -233,7 +232,7 @@ Ou, ambos ao mesmo tempo:
 dim(gapminder)
 ```
 
-Nós vamos também querer saber o que o título de todas as colunas não, então podemos
+Nós vamos também querer saber o que o título de todas as colunas são, então podemos
 perguntar por elas:
 
 ```{r}
@@ -243,9 +242,9 @@ colnames(gapminder)
 Neste ponto, é importante perguntar a nós mesmos se o que estrutura do R está reportando
 combina com nossa intuição ou expectativas; os tipos básicos de dados relatados por cada coluna fazem sentido? Se não, precisamos classificar os problemas agora antes que eles se tornem
 más supresas pelo caminho, usando o que aprendemos sobre como R interpreta os dados,
-e a importância da *consciencia estrita* em como nós armazenamos nossos dados.
+e a importância da *consciência estrita* em como nós armazenamos nossos dados.
 
-Uma vez que estamos felizes que os tipos de dados e estruturas parecem razoáveis, é hora de começar a cavar no pode dos dados adequadamente. COnfira as primeiras linhas:
+Uma vez que estamos felizes que os tipos de dados e estruturas parecem razoáveis, é hora de começar a cavar no pode dos dados adequadamente. Confira as primeiras linhas:
 
 ```{r}
 head(gapminder)
@@ -282,7 +281,7 @@ em um arquivo script então podemos voltar a ele mais tarde.
 > agora, use o que aprendemos sobre fatores, listas e vetores,
 > como a saída de funções como `colnames` e `dim` explicam
 > o que o que saída de `str` para gapminder significa.
-> Se há alguma parte que você não consegue interpretam, discuta com os amigos!
+> Se há alguma parte que você não consegue interpretar, discuta com os amigos!
 >
 > > ## Solução para o Desafio 3
 > >
