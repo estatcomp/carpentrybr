@@ -36,7 +36,7 @@
 <p>das mudanças que fizer no corpo da função, fique dentro do corpo da função.
 <ul>
 <h1>dica</h1>
-<p> **ESCOPO DA FUNÇÃO**
+<p> ESCOPO DA FUNÇÃO
 <ul>
 <p>Outro conceito importante é o escopo: quaisquer variáveis ou funções que você criar ou modificar dentro do corpo de uma
 <p>função só existem para o tempo de vida da execução da função. 
