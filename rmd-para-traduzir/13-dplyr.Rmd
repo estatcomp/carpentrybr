@@ -22,7 +22,7 @@ knitr_fig_path("13-")
 gapminder <- read.csv("data/gapminder-FiveYearData.csv", header=TRUE)
 ```
 
-Manipulation of dataframes means many things to many researchers, we often
+Manipulação de dataframes means many things to many researchers, we often
 select certain observations (rows) or variables (columns), we often group the
 data by a certain variable(s), or we even calculate summary statistics. We can
 do these operations using the normal base R operations:
