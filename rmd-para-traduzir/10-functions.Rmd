@@ -143,16 +143,16 @@ kelvin_to_celsius <- function(temp) {
 }
 ```
 
-> ## Challenge 2
+> ## Desafio 2
 >
-> Define the function to convert directly from Fahrenheit to Celsius,
-> by reusing the two functions above (or using your own functions if you prefer).
+> Defina a função que converte diratamente de Fahrenheit para Celsius, 
+> reutilizando as duas funções acima (ou usando as funções que preferir).
 >
 >
-> > ## Solution to challenge 2
+> > ## Solução Desafio 2
 > >
-> > Define the function to convert directly from Fahrenheit to Celsius,
-> > by reusing these two functions above
+> > Vamos definir uma função que calcula o Produto Interno Bruto de uma nação a partir 
+>> dos dados disponíveis no nosso conjunto de dados.
 > >
 > >
 > > ```{r}
@@ -179,30 +179,25 @@ calcGDP <- function(dat) {
 }
 ```
 
-We define `calcGDP` by assigning it to the output of `function`.
-The list of argument names are contained within parentheses.
-Next, the body of the function -- the statements executed when you
-call the function -- is contained within curly braces (`{}`).
+Nós definimos calcGDP ao assinalar a saída da função. A lista dos nomes dos argumentos
+está contida dentro dos parênteses. Depois, o corpo da função - as afirmações executadas 
+quando você chama a função - está contida dentro das chaves ({}).
 
-We've indented the statements in the body by two spaces. This makes
-the code easier to read but does not affect how it operates.
+Nós dividimos as afirmações dentro do corpo por dois espaços. Isso deixa o código mais
+fácil de entender, mas não afeta seu modo de operação.
 
-When we call the function, the values we pass to it are assigned
-to the arguments, which become variables inside the body of the
-function.
+Quando nós chamamos a função, os valores que passamos a ela são assinalados para os argumentos, 
+que se tornam variáveis dentro do corpo da função.
 
-Inside the function, we use the `return` function to send back the
-result. This return function is optional: R will automatically
-return the results of whatever command is executed on the last line
-of the function.
+Dentro da função, nós usamos a função return para retornar o resultado. A função de retorno
+é opcional: o R vai automaticamente retornar os resultados qualquer que seja o comando executado na última linha da função.
 
 
 ```{r}
 calcGDP(head(gapminder))
 ```
 
-That's not very informative. Let's add some more arguments so we can extract
-that per year and country.
+Isso não é muito informativo. Vamos adicionar mais argumentos para que possamos extrair informações por ano e por país.
 
 ```{r}
 # Takes a dataset and multiplies the population column
@@ -221,9 +216,8 @@ calcGDP <- function(dat, year=NULL, country=NULL) {
 }
 ```
 
-If you've been writing these functions down into a separate R script
-(a good idea!), you can load in the functions into our R session by using the
-`source` function:
+Se você já está escrevendo essas funções em um script do R separado(uma boa ideia!), 
+você pode carregar essas funções para a nossa sessão do R usando a função source.
 
 ```{r, eval=FALSE}
 source("functions/functions-lesson.R")
