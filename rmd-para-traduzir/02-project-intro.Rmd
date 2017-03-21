@@ -1,19 +1,18 @@
 ---
-t?tulo: " Gerenciamento de projetos com RStudio"
-ensino: 20
-exerc?cios: 10
-quest?es:
-- "Como eu posso gerenciar meus projetos no R ?"
-objetivos:
-- Ser capaz de criar projetos independentes com RStudio
-- TSer capaz de usar o git com o RStudio
-pontos-chave:
-- "Utilizar o RStudio para criar e gerenciar projetos com bom layout."
-- "Tratar os dados apenas como arquivos de leitura."
-- "Tratas as sa?das como dispens?veis."
-- "Separar as fun??es das aplica??es."
-- "Usar a vers?o de controle"
-source: Rmd
+title: "Project Management With RStudio"
+teaching: 20
+exercises: 10
+questions:
+- "How can I manage my projects in R?"
+objectives:
+- To be able to create self-contained projects in RStudio
+- To be able to use git from within RStudio
+keypoints:
+- "Use RStudio to create and manage projects with consistent layout."
+- "Treat raw data as read-only."
+- "Treat generated output as disposable."
+- "Separate function definition and application."
+- "Use version control."
 ---
 
 ```{r, include=FALSE}
