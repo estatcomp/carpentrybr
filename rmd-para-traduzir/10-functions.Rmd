@@ -55,7 +55,7 @@ Let's open a new R script file in the `functions/` directory and call it functio
 ```{r}
 my_sum <- function(a, b) {
   the_sum <- a + b
-  return(the_sum)
+  return(the_sum) 
 }
 ```
 
