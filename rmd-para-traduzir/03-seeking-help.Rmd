@@ -103,7 +103,6 @@ Irá imprimir a sua atual versão do R, bem como os pacotes que você tem carreg
 > ```
 > > ## Solução do desafio 1
 > >
-
 > > A função `c()` cria um vetor, no qual todos elementos são do mesmo tipo. No
 > > primeiro caso, os elementos são numéricos, no segundo, eles são caracteres, e no
 > > terceiro eles são caracteres: os valores numéricos foram "forçados" a serem
