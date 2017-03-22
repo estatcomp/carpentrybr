@@ -148,9 +148,9 @@ Agora que não temos uma boa estrutura para o diretório iremos colocar/salvar o
 
 > ## Desafio 2
 > É útil ter alguma ideia geral sobre o banco de dados, diretamente pela linha de 
-> comando, antes de carregá-los no R. Entendendo o banco de dados bem serÃ¡ Ãºtil quando
-> formos fazer decisÃµes sobre como carregá-lo no R. Use a linha de comando shell para
-> responder as seguintes questÃµes:
+> comando, antes de carregá-los no R. Entendendo o banco de dados bem será útil quando
+> formos fazer decisões sobre como carregá-lo no R. Use a linha de comando shell para
+> responder as seguintes questões:
 > 1. Qual é o tamanho do arquivo?
 > 2. Quantas linhas de dados ele contém?
 > 3. Quais são os tipos de dados dos valores armazenados neste arquivo?
@@ -161,11 +161,11 @@ Agora que não temos uma boa estrutura para o diretório iremos colocar/salvar o
 > > ```{r ch2a-sol, engine='sh'}
 > > ls -lh data/gapminder-FiveYearData.csv
 > > ```
-> > O tamanho do arquivo Ã© 80K.
+> > O tamanho do arquivo é 80K.
 > > ```{r ch2b-sol, engine='sh'}
 > > wc -l data/gapminder-FiveYearData.csv
 > > ```
-> > Existem 1705 linhas que sÃ£o parecidas como em:
+> > Existem 1705 linhas que são parecidas como em:
 > > ```{r ch2c-sol, engine='sh'}
 > > head data/gapminder-FiveYearData.csv
 > > ```
@@ -177,15 +177,15 @@ Agora que não temos uma boa estrutura para o diretório iremos colocar/salvar o
 > Você pode rapidamente abrir um shell em RStudio usando o item **Tools -> Shell**  do menu.
 {: .callout}
 
-### Controle de versÃ£o
+### Controle de versão
 
 Também podemos integrar nosso projeto com git, o colocando sob controle de versão. RStudio possui uma interface para o git melhor que a do shell, mas é bastante limitada no que ela pode fazer, logo você ocasionalmente se encontrará precisando usar o shell. Vamos continuar e fazer um primeiro commit dos nossos templates.
 
 O painel workspace/history tem um botão para Git. Podemos selecionar cada arquivo marcando nas caixas: você verá um "A" verde próximo dos arquivos e pastas, e pontos de interrogações amarelos próximos dos arquivos ou pastas que o git ainda não conhece. RStudio também mostra para você a diferença entre arquivos de diferentes commits.
 
-> ## Dica: Versão para saída descartÃ¡vel
+> ## Dica: Versão para saída descartável
 >
-> Geralmente você nÃ£o deseja criar uma versÃ£o para saída descartável (ou dados para
+> Geralmente você não deseja criar uma versão para saída descartável (ou dados para
 > somente leitura). você deve modificar o arquivo `.gitignore` para dizer ao git para
 > ignorar esses arquivos e pastas.
 {: .callout}
