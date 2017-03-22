@@ -1,15 +1,15 @@
 ---
-title: "Seeking Help"
+title: "Procurando ajuda"
 teaching: 10
 exercises: 10
 questions:
-- "How can I get help in R?"
+- "Como posso conseguir ajuda no R?"
 objectives:
-- "To be able read R help files for functions and special operators."
-- "To be able to use CRAN task views to identify packages to solve a problem."
-- "To be able to seek help from your peers."
+- "Ser capaz de ler arquivos de ajuda do R para funções e caracteres especiais."
+- "Ser capaz de usar a lista de tópicos do CRAN para identificar pacotes que possam resolver um problema."
+- "Ser capaz de procurar ajuda de colegas."
 keypoints:
-- "Use `help()` to get online help in R."
+- "Usar `help()` para conseguir ajuda online no R."
 ---
 
 
