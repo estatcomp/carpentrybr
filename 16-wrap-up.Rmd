@@ -13,6 +13,7 @@ keypoints:
 - "Não seja repetitivo"
 - "Não seja repetitivo."
 - "Seja consistente ao nomear, indentae e outros aspectos de formatação."
+source: Rmd
 ---
   
 ## Tornar o código legível

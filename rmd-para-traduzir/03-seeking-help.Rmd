@@ -1,17 +1,17 @@
 ---
-título: "Procurado ajuda"
-ensino: 10
-exercícios: 10
-questões:
+title: "Procurando ajuda"
+teaching: 10
+exercises: 10
+questions:
 - "Como posso conseguir ajuda no R?"
-objetivos:
+objectives:
 - "Ser capaz de ler arquivos de ajuda do R para funções e caracteres especiais."
 - "Ser capaz de usar a lista de tópicos do CRAN para identificar pacotes que possam resolver um problema."
 - "Ser capaz de procurar ajuda de colegas."
-pontos-chave:
-- "Usar o `help()` para conseguir ajuda online no R."
-source: Rmd
+keypoints:
+- "Usar `help()` para conseguir ajuda online no R."
 ---
+
 
 ```{r, include=FALSE}
 source("../bin/chunk-options.R")
@@ -103,7 +103,6 @@ Irá imprimir a sua atual versão do R, bem como os pacotes que você tem carreg
 > ```
 > > ## Solução do desafio 1
 > >
-
 > > A função `c()` cria um vetor, no qual todos elementos são do mesmo tipo. No
 > > primeiro caso, os elementos são numéricos, no segundo, eles são caracteres, e no
 > > terceiro eles são caracteres: os valores numéricos foram "forçados" a serem
