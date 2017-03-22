@@ -24,7 +24,7 @@ knitr_fig_path("02-")
 ## Introdução
 
 O processo científico é de natureza incremental. Muitos projetos começam com notas ou códigos aleatórios e a partir disso surgem manuscritos. Eventualmente essas escritas e códigos se misturam.
-<blockquote class="twitter-tweet"><p>Managing your projects in a reproducible fashion doesn't just make your science reproducible, it makes your life easier.</p>â Vince Buffalo (@vsbuffalo) <a href="https://twitter.com/vsbuffalo/status/323638476153167872">April 15, 2013</a></blockquote>
+<blockquote class="twitter-tweet"><p>Managing your projects in a reproducible fashion doesn't just make your science reproducible, it makes your life easier.</p>— Vince Buffalo (@vsbuffalo) <a href="https://twitter.com/vsbuffalo/status/323638476153167872">April 15, 2013</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 A maioria das pessas organizam seus projetos da seguinte maneira
