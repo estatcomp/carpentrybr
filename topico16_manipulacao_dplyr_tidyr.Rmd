@@ -68,7 +68,7 @@ gapminder %>%
 
 ```
 
-**Desafio**
+**Desafio avançado**
 
 Para cada continente, calcule a expectativa de vida média em 2002 de 2 países selecionados aleatoriamente. Em seguida, organize os nomes dos continentes em ordem inversa. Dica: Use as funções do *dplyr* *arrange()* e *sample_n()*, elas têm sintaxe similar a outras funções do *dplyr*.
 
